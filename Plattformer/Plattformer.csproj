@@ -38,6 +38,7 @@
     <ApplicationIcon>Icon.ico</ApplicationIcon>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="Enemy\TileGrid.cs" />
     <Compile Include="TextureManager.cs" />
     <Compile Include="Övrigt\BackGround.cs" />
     <Compile Include="GameObjects\Block.cs" />

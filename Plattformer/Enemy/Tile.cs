@@ -79,7 +79,7 @@ namespace Plattformer
             this.texture = texture;
             this.position = position;
             this.size = size;
-            this.origin = new Vector2(size / 2, size / 2);
+           //this.origin = new Vector2(size / 2, size / 2);
             this.velocity = Vector2.Zero;
             this.acceleration = Vector2.Zero;
             this.startPos = position;
@@ -92,8 +92,10 @@ namespace Plattformer
 
         public virtual void Draw(SpriteBatch spritebatch)
         {
-            spritebatch.Draw(texture, position, null, new Color(0f, 0.1f, 0f), 0, origin, 1, SpriteEffects.None, 1);
+            //spritebatch.Draw(texture, position, null, new Color(0f, 0.1f, 0f), 0, origin, 1, SpriteEffects.None, 1);
+            spritebatch.Draw(texture, position, Color.Aqua);
         }
+
 
         public virtual void SolveCollision(Tile target)
         {
