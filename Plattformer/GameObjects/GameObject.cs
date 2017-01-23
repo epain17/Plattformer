@@ -18,6 +18,7 @@ namespace Plattformer
         public Vector2 Pos
         {
             get { return drawPos; }
+            set { drawPos = value; }
         }
 
         public GameObject(Texture2D tex, int x, int y)
@@ -119,6 +120,11 @@ namespace Plattformer
         public virtual void Update(GameTime gameTime)
         {
 
+        }
+
+        public Point myPoint
+        {
+            get { return new Point((int)drawPos.X / 40, (int)drawPos.Y / 40); }
         }
 
         public virtual void Draw(SpriteBatch spriteBatch)

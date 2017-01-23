@@ -257,7 +257,7 @@ namespace Plattformer
             Queue<Vector2> finalPath = new Queue<Vector2>();
             for (int i = closedList.Count - 1; i >= 0; i--)
             {
-                finalPath.Enqueue(new Vector2((closedList[i].Position.X * 32), (closedList[i].Position.Y * 32)));
+                finalPath.Enqueue(new Vector2((closedList[i].Position.X * 40), (closedList[i].Position.Y * 40)));
             }
             return finalPath;
         }

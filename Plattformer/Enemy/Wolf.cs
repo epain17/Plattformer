@@ -1,5 +1,6 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using Plattformer.Enemy;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -8,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace Plattformer
 {
-    class Wolf : GameObject
+    class Wolf
     {
 
         enum Movement
@@ -18,21 +19,25 @@ namespace Plattformer
             attackLeft,
             attackRight,
             fleeLeft,
-            fleeWritght,
+            fleeRitght,
         }
         Movement currentMovement = Movement.walkLeft;
 
-        Vector2 speed;
+        Vector2 velocity, accelaration;
+        float speed;
 
         //Wolf Textures and Animation
         SpriteEffects wolfFx;
         private double frameTimer, frameInterval;
         private int frame;
         private bool changeDirection = false;
+        Rectangle sourceRect;
+        Texture2D tex, tex2;
+        Vector2 position;
 
         protected float speedS;
         protected int startHp;
-        //Pathfinder pathfinder;
+        Pathfinder pathfinder;
         Point startPoint, endPoint, previous;
         protected Queue<Vector2> waypoints = new Queue<Vector2>();
         private Point pr;
@@ -41,167 +46,195 @@ namespace Plattformer
         protected int aggroRange = 400;
 
         //Wolf Hitbox
-        public override Rectangle HitBox()
-        {
-            return new Rectangle((int)drawPos.X, (int)drawPos.Y, 60, 40);
-        }
 
-        public Wolf(Texture2D tex, int x, int y) : base(tex, x, y)
+        public Wolf(Texture2D tex, Texture2D tex2, int x, int y)
         {
             this.tex = tex;
+            this.tex2 = tex2;
+
             sourceRect = new Rectangle(0, 50, 96, 37);
             frameTimer = 175;
             frameInterval = 175;
+            speed = 5f;
+            position = new Vector2(x, y);
+            accelaration = Vector2.Zero;
 
             wolfFx = SpriteEffects.None;
         }
 
-
-        public override void HandelCollision(GameObject g, int o)
+        public Rectangle HitBox()
         {
-            //Top
-            if (o == 1)
-            {
-                speed.Y = 0;
-                drawPos.Y = g.HitBox().Y - HitBox().Height + 1;
-            }
-
-            //Left
-            if (o == 3)
-            {
-                drawPos.X = drawPos.X - 1;
-                changeDirection = true;
-
-            }
-
-            //Right
-            if (o == 4)
-            {
-                drawPos.X = drawPos.X + 1;
-                changeDirection = false;
-            }
-
-
+            return new Rectangle((int)position.X, (int)position.Y, 60, 40);
         }
 
-        public override void Update(GameTime gameTime)
+        //public override void HandelCollision(GameObject g, int o)
+        //{
+        //    //Top
+        //    if (o == 1)
+        //    {
+        //        speed.Y = 0;
+        //        drawPos.Y = g.HitBox().Y - HitBox().Height + 1;
+        //    }
+
+        //    //Left
+        //    if (o == 3)
+        //    {
+        //        drawPos.X = drawPos.X - 1;
+        //        changeDirection = true;
+
+        //    }
+
+        //    //Right
+        //    if (o == 4)
+        //    {
+        //        drawPos.X = drawPos.X + 1;
+        //        changeDirection = false;
+        //    }
+
+
+        //}
+
+        public void Update(GameTime gameTime, Point target, TileGrid grid)
         {
+            position += (velocity + accelaration)/2;
+            FindPath(target, grid);
+
             //Animation and Texture switch
 
-            frameTimer -= gameTime.ElapsedGameTime.TotalMilliseconds;
-            if (frameTimer <= 0)
-            {
-                frameTimer = frameInterval;
-                sourceRect.X = (frame % 5) * 95;
-            }
+            //frameTimer -= gameTime.ElapsedGameTime.TotalMilliseconds;
+            //if (frameTimer <= 0)
+            //{
+            //    frameTimer = frameInterval;
+            //    sourceRect.X = (frame % 5) * 95;
+            //}
 
-            if (changeDirection == false)
-            {
-                currentMovement = Movement.walkRight;
-                wolfFx = SpriteEffects.None;
-            }
+            //if (changeDirection == false)
+            //{
+            //    currentMovement = Movement.walkRight;
+            //    wolfFx = SpriteEffects.None;
+            //}
 
-            if (changeDirection == true)
-            {
-                currentMovement = Movement.walkLeft;
-                wolfFx = SpriteEffects.FlipHorizontally;
-            }
+            //if (changeDirection == true)
+            //{
+            //    currentMovement = Movement.walkLeft;
+            //    wolfFx = SpriteEffects.FlipHorizontally;
+            //}
 
-            drawPos += speed;
-            switch (currentMovement)
-            {
+            //drawPos += speed;
+            //switch (currentMovement)
+            //{
 
 
-                case Movement.walkRight:
-                    speed.X = 1;
-                    frame++;
-                    break;
+            //    case Movement.walkRight:
+            //        speed.X = 1;
+            //        frame++;
+            //        break;
 
-                case Movement.walkLeft:
-                    speed.X = -1;
-                    frame++;
-                    break;
-            }
+            //    case Movement.walkLeft:
+            //        speed.X = -1;
+            //        frame++;
+            //        break;
+            //}
+
+          
+            UpdatePos();
+
         }
 
         public void WolfKill()
         {
 
-            drawPos = new Vector2(2880, 360);
+            position = new Vector2(2880, 360);
         }
 
-        public override void Draw(SpriteBatch spriteBatch)
+        public void Draw(SpriteBatch spriteBatch)
         {
 
-            spriteBatch.Draw(tex, drawPos, sourceRect, Color.White, 0, new Vector2(), 1, wolfFx, 1);
+            spriteBatch.Draw(tex, position, sourceRect, Color.White, 0, new Vector2(), 1, SpriteEffects.None, 1);
+
+            if (waypoints != null)
+            {
+
+                foreach (Vector2 v in waypoints)
+                {
+                    spriteBatch.Draw(tex2, new Vector2(v.X, v.Y), Color.White);
+                }
+            }
 
         }
-    //    float DistanceToWaypoint
-    //    {
-    //        get { return Vector2.Distance(position, waypoints.Peek()); }
-    //    }
 
-    //    public void FindPath(Point targetPoint, TileGrid grid)
-    //    {
-    //        if (waypoints != null)
-    //        {
-    //            if (waypoints.Count() == 0 && targetPoint != myPoint)
-    //            {
-    //                pathfinder = new Pathfinder(grid);
-    //                waypoints.Clear();
-    //                startPoint = myPoint;
-    //                endPoint = targetPoint;
-    //                waypoints = pathfinder.FindPath(startPoint, endPoint, previous);
-    //            }
+        float DistanceToWaypoint
+        {
+            get { return Vector2.Distance(position, waypoints.Peek()); }
+        }
 
-    //        }
+        public void FindPath(Point targetPoint, TileGrid grid)
+        {
+            if (waypoints != null)
+            {
+                waypoints.Clear();
+                if (waypoints.Count() == 0 && targetPoint != myPoint)
+                {
+                    pathfinder = new Pathfinder(grid);
+                    waypoints.Clear();
+                    startPoint = myPoint;
+                    endPoint = targetPoint;
+                    waypoints = pathfinder.FindPath(startPoint, endPoint, previous);
+                }
 
-    //    }
+            }
 
-    //    protected virtual void UpdatePos()
-    //    {
-    //        if (waypoints != null)
-    //        {
-    //            if (waypoints.Count > 0)
-    //            {
-    //                if (DistanceToWaypoint < 1.5f)
-    //                {
-    //                    position = waypoints.Peek();
-    //                    previous = new Point((int)waypoints.Peek().X / mySize, (int)waypoints.Peek().Y / mySize);
-    //                    waypoints.Dequeue();
-    //                }
-    //                else
-    //                {
-    //                    Vector2 direction = waypoints.Peek() - position;
-    //                    direction.Normalize();
-    //                    velocity = Vector2.Multiply(direction, speed);
-    //                }
-    //            }
-    //            else
-    //                velocity = Vector2.Zero;
-    //        }
-    //    }
+        }
 
-    //    private int FoundPlayer(Point TP)
-    //    {
-    //        if (Range(TP) < aggroRange)
-    //        {
-    //            return 1;
-    //        }
+        protected virtual void UpdatePos()
+        {
+            if (waypoints != null)
+            {
+                if (waypoints.Count > 0)
+                {
+                    if (DistanceToWaypoint < 2f)
+                    {
+                        position = waypoints.Peek();
+                        previous = new Point((int)waypoints.Peek().X / 40, (int)waypoints.Peek().Y / 40);
+                        waypoints.Dequeue();
+                    }
+                    else
+                    {
+                        Vector2 direction = waypoints.Peek() - position;
+                        direction.Normalize();
+                        velocity = Vector2.Multiply(direction, speed);
+                    }
+                }
+                else
+                    velocity = Vector2.Zero;
+            }
+        }
 
-    //        else if (Range(TP) > aggroRange && myPoint != pr)
-    //        {
-    //            return 2;
-    //        }
+        private int FoundPlayer(Point TP)
+        {
+            if (Range(TP) < aggroRange)
+            {
+                return 1;
+            }
 
-    //        return 0;
-    //    }
+            else if (Range(TP) > aggroRange && myPoint != pr)
+            {
+                return 2;
+            }
 
-    //    protected float Range(Point point)
-    //    {
-    //        Vector2 range = new Vector2(point.X * size, point.Y * size);
-    //        return Vector2.Distance(this.position, range);
-    //    }
+            return 0;
+        }
+
+        public Point myPoint
+        {
+            get { return new Point((int)position.X / 40, (int)position.Y / 40); }
+        }
+
+        protected float Range(Point point)
+        {
+            Vector2 range = new Vector2(point.X * 40, point.Y * 40);
+            return Vector2.Distance(this.position, range);
+        }
     }
 
 

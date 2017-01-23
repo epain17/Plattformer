@@ -10,31 +10,36 @@ namespace Plattformer.Enemy
 {
     class TileGrid
     {
-        public int width, height;
+        public int width, height, startX, startY;
         Texture2D tileTex;
         Tile[,] tileGrid;
         int size;
 
-        public TileGrid(Texture2D tileTex, int size, int columns, int rows)
+        public TileGrid(Texture2D tileTex, int startX, int startY, int size, int columns, int rows)
         {
+
             this.tileTex = tileTex;
             this.size = size;
-            width = columns;
-            height = rows;
+            this.startX = startX;
+            this.startY = startY;
+            this.width = columns;
+            this.height = rows;
 
             CreateTileGrid();
         }
 
         public void CreateTileGrid()
         {
+          
+            tileGrid = new Tile[width, height]; 
             for (int i = 0; i < width; i++)
             {
                 for (int j = 0; j < height; j++)
                 {
-                    tileGrid[i, j] = new Tile(tileTex, new Vector2((size / 2) + i * size, (size / 2) + j * size), size);
+                    tileGrid[i, j] = new Tile(tileTex, new Vector2((startX+i) * size, (startY+j) * size), size);
                 }
             }
-            tileGrid = new Tile[width, height];
+         
         }
 
         public int CheckWalkable(int cellX, int cellY)
