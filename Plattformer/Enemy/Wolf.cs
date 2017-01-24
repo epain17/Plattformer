@@ -14,38 +14,34 @@ namespace Plattformer
 
         enum Movement
         {
-            walkRight,
-            walkLeft,
-            attackLeft,
-            attackRight,
-            fleeLeft,
-            fleeRitght,
+            attack,
+            sleep,
+            patrol,
+            flee,
         }
-        Movement currentMovement = Movement.walkLeft;
+        Movement currentMovement = Movement.attack;
 
-        Vector2 velocity, accelaration;
-        float speed;
+        Vector2 accelaration;
+        Vector2 position;
+        Vector2 velocity;
 
-        //Wolf Textures and Animation
-        SpriteEffects wolfFx;
-        private double frameTimer, frameInterval;
-        private int frame;
-        private bool changeDirection = false;
         Rectangle sourceRect;
         Texture2D tex, tex2;
-        Vector2 position;
 
-        protected float speedS;
-        protected int startHp;
-        Pathfinder pathfinder;
+        Queue<Vector2> waypoints = new Queue<Vector2>();
         Point startPoint, endPoint, previous;
-        protected Queue<Vector2> waypoints = new Queue<Vector2>();
-        private Point pr;
+        Pathfinder pathfinder;
+        Point pr;
 
+        double frameTimer, frameInterval;
+        float speed;
+        float speedS;
+        int aggroRange = 400;
+        int frame;
+        int startHp;
+        bool changeDirection = false;
 
-        protected int aggroRange = 400;
-
-        //Wolf Hitbox
+        SpriteEffects wolfFx;
 
         public Wolf(Texture2D tex, Texture2D tex2, int x, int y)
         {
@@ -53,13 +49,59 @@ namespace Plattformer
             this.tex2 = tex2;
 
             sourceRect = new Rectangle(0, 50, 96, 37);
+            position = new Vector2(x, y);
+            accelaration = Vector2.Zero;
+            wolfFx = SpriteEffects.None;
+
             frameTimer = 175;
             frameInterval = 175;
             speed = 5f;
-            position = new Vector2(x, y);
-            accelaration = Vector2.Zero;
 
-            wolfFx = SpriteEffects.None;
+        }
+
+        public void Update(GameTime gameTime, Point target, TileGrid grid)
+        {
+
+            switch (currentMovement)
+            {
+
+                case Movement.attack:
+
+                    position += (velocity + accelaration) / 2;
+                    FindPath(target, grid);
+                    UpdatePos();
+                    break;
+
+                case Movement.sleep:
+
+                    break;
+
+                case Movement.patrol:
+
+                    break;
+
+                case Movement.flee:
+
+                    break;
+            }
+
+
+        }
+
+        public void Draw(SpriteBatch spriteBatch)
+        {
+
+            spriteBatch.Draw(tex, position, sourceRect, Color.White, 0, new Vector2(), 1, SpriteEffects.None, 1);
+
+            //if (waypoints != null)
+            //{
+
+            //    //foreach (Vector2 v in waypoints)
+            //    //{
+            //    //    spriteBatch.Draw(tex2, new Vector2(v.X, v.Y), Color.White);
+            //    //}
+            //}
+
         }
 
         public Rectangle HitBox()
@@ -67,78 +109,9 @@ namespace Plattformer
             return new Rectangle((int)position.X, (int)position.Y, 60, 40);
         }
 
-        //public override void HandelCollision(GameObject g, int o)
-        //{
-        //    //Top
-        //    if (o == 1)
-        //    {
-        //        speed.Y = 0;
-        //        drawPos.Y = g.HitBox().Y - HitBox().Height + 1;
-        //    }
-
-        //    //Left
-        //    if (o == 3)
-        //    {
-        //        drawPos.X = drawPos.X - 1;
-        //        changeDirection = true;
-
-        //    }
-
-        //    //Right
-        //    if (o == 4)
-        //    {
-        //        drawPos.X = drawPos.X + 1;
-        //        changeDirection = false;
-        //    }
-
-
-        //}
-
-        public void Update(GameTime gameTime, Point target, TileGrid grid)
+        public Point myPoint
         {
-            position += (velocity + accelaration)/2;
-            FindPath(target, grid);
-
-            //Animation and Texture switch
-
-            //frameTimer -= gameTime.ElapsedGameTime.TotalMilliseconds;
-            //if (frameTimer <= 0)
-            //{
-            //    frameTimer = frameInterval;
-            //    sourceRect.X = (frame % 5) * 95;
-            //}
-
-            //if (changeDirection == false)
-            //{
-            //    currentMovement = Movement.walkRight;
-            //    wolfFx = SpriteEffects.None;
-            //}
-
-            //if (changeDirection == true)
-            //{
-            //    currentMovement = Movement.walkLeft;
-            //    wolfFx = SpriteEffects.FlipHorizontally;
-            //}
-
-            //drawPos += speed;
-            //switch (currentMovement)
-            //{
-
-
-            //    case Movement.walkRight:
-            //        speed.X = 1;
-            //        frame++;
-            //        break;
-
-            //    case Movement.walkLeft:
-            //        speed.X = -1;
-            //        frame++;
-            //        break;
-            //}
-
-          
-            UpdatePos();
-
+            get { return new Point((int)position.X / 40, (int)position.Y / 40); }
         }
 
         public void WolfKill()
@@ -147,22 +120,8 @@ namespace Plattformer
             position = new Vector2(2880, 360);
         }
 
-        public void Draw(SpriteBatch spriteBatch)
-        {
 
-            spriteBatch.Draw(tex, position, sourceRect, Color.White, 0, new Vector2(), 1, SpriteEffects.None, 1);
-
-            if (waypoints != null)
-            {
-
-                foreach (Vector2 v in waypoints)
-                {
-                    spriteBatch.Draw(tex2, new Vector2(v.X, v.Y), Color.White);
-                }
-            }
-
-        }
-
+        //Pathfinding
         float DistanceToWaypoint
         {
             get { return Vector2.Distance(position, waypoints.Peek()); }
@@ -225,11 +184,6 @@ namespace Plattformer
             return 0;
         }
 
-        public Point myPoint
-        {
-            get { return new Point((int)position.X / 40, (int)position.Y / 40); }
-        }
-
         protected float Range(Point point)
         {
             Vector2 range = new Vector2(point.X * 40, point.Y * 40);
@@ -239,3 +193,66 @@ namespace Plattformer
 
 
 }
+//public override void HandelCollision(GameObject g, int o)
+//{
+//    //Top
+//    if (o == 1)
+//    {
+//        speed.Y = 0;
+//        drawPos.Y = g.HitBox().Y - HitBox().Height + 1;
+//    }
+
+//    //Left
+//    if (o == 3)
+//    {
+//        drawPos.X = drawPos.X - 1;
+//        changeDirection = true;
+
+//    }
+
+//    //Right
+//    if (o == 4)
+//    {
+//        drawPos.X = drawPos.X + 1;
+//        changeDirection = false;
+//    }
+
+
+//}
+//Animation and Texture switch
+
+//frameTimer -= gameTime.ElapsedGameTime.TotalMilliseconds;
+//if (frameTimer <= 0)
+//{
+//    frameTimer = frameInterval;
+//    sourceRect.X = (frame % 5) * 95;
+//}
+
+//if (changeDirection == false)
+//{
+//    currentMovement = Movement.walkRight;
+//    wolfFx = SpriteEffects.None;
+//}
+
+//if (changeDirection == true)
+//{
+//    currentMovement = Movement.walkLeft;
+//    wolfFx = SpriteEffects.FlipHorizontally;
+//}
+
+//drawPos += speed;
+//switch (currentMovement)
+//{
+
+
+//    case Movement.walkRight:
+//        speed.X = 1;
+//        frame++;
+//        break;
+
+//    case Movement.walkLeft:
+//        speed.X = -1;
+//        frame++;
+//        break;
+//}
+

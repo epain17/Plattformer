@@ -45,6 +45,11 @@ namespace Plattformer
             return new Rectangle((int)drawPos.X + 10, (int)drawPos.Y, 20, 40);
         }
 
+        public Point myPoint
+        {
+            get { return new Point((int)drawPos.X / 40, (int)drawPos.Y / 40); }
+        }
+
         //Constructor
         public Player(Texture2D tex, int x, int y)
             : base(tex, x, y)

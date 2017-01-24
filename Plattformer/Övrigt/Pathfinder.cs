@@ -43,6 +43,7 @@ namespace Plattformer
         private void InitializeSearchNodes(TileGrid grid)
         {
             //Nodes får aldrig bli null;
+           
             searchNodes = new SearchNode[levelWidth, levelHeight];
             for (int x = 0; x < levelWidth; x++)
             {
@@ -77,10 +78,10 @@ namespace Plattformer
                         new Point(x, y + 1),
                         new Point(x -1, y),
                         new Point(x +1, y),
-                        new Point(x +1, y -1),
-                        new Point(x +1, y +1),
-                        new Point(x -1, y -1),
-                        new Point(x -1, y +1),
+                        //new Point(x +1, y -1),
+                        //new Point(x +1, y +1),
+                        //new Point(x -1, y -1),
+                        //new Point(x -1, y +1),
                     };
 
                     for (int i = 0; i < neighbors.Length; i++)
@@ -197,8 +198,6 @@ namespace Plattformer
             return null;
         }
 
-
-
         private void ResetSearchNode()
         {
             openList.Clear();
@@ -262,41 +261,6 @@ namespace Plattformer
             return finalPath;
         }
 
-
-        //private int ManhattanDistance(SearchNode startNode, SearchNode endNode)
-        //{
-        //    return (Math.Abs(endNode.Position.X - startNode.Position.X) + Math.Abs(endNode.Position.Y - startNode.Position.Y));
-        //}
-
-        //List<SearchNode> IdentifySuccessors(SearchNode currentNode, SearchNode startNode, SearchNode endNode)
-        //{
-        //    foreach (SearchNode node in openList)
-        //    {
-        //        int dX = (node.Position.X - currentNode.Position.X);
-        //        int dY = (node.Position.Y - currentNode.Position.Y);
-
-        //        var jumpPoint = jump(currentNode.Position.X,
-        //            currentNode.Position.Y, dX, dY, startNode, endNode);
-
-        //        if (jumpPoint) closedList.Add(jumpPoint);
-        //    }
-
-        //    return closedList;
-
-        //}
-
-        //SearchNode Jump(int cnX, int cnY, int dX, int dY, SearchNode start, SearchNode end, TileGrid grid)
-        //{
-        //    int nextX = cnX + dX;
-        //    int nextY = cnY + dY;
-
-        //    if (grid.CheckWalkable(nextX, nextY) == 0)
-        //    {
-        //        return null;
-        //    }
-
-        //    if(next == end.Position.X && )
-        //}
     }
 }
 
