@@ -61,15 +61,15 @@ namespace Plattformer
 
         public void Update(GameTime gameTime, Point target, TileGrid grid)
         {
+            position += (velocity + accelaration) / 2;
+            FindPath(target, grid);
+            UpdatePos();
 
             switch (currentMovement)
             {
 
                 case Movement.attack:
 
-                    position += (velocity + accelaration) / 2;
-                    FindPath(target, grid);
-                    UpdatePos();
                     break;
 
                 case Movement.sleep:
@@ -93,14 +93,14 @@ namespace Plattformer
 
             spriteBatch.Draw(tex, position, sourceRect, Color.White, 0, new Vector2(), 1, SpriteEffects.None, 1);
 
-            //if (waypoints != null)
-            //{
+            if (waypoints != null)
+            {
 
-            //    //foreach (Vector2 v in waypoints)
-            //    //{
-            //    //    spriteBatch.Draw(tex2, new Vector2(v.X, v.Y), Color.White);
-            //    //}
-            //}
+                foreach (Vector2 v in waypoints)
+                {
+                    spriteBatch.Draw(tex2, new Vector2(v.X, v.Y), Color.White);
+                }
+            }
 
         }
 

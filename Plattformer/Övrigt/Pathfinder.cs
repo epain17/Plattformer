@@ -25,6 +25,7 @@ namespace Plattformer
         private SearchNode[,] searchNodes;
         private int levelWidth;
         private int levelHeight;
+        private int SX, SY;
         private List<SearchNode> openList = new List<SearchNode>();
         private List<SearchNode> closedList = new List<SearchNode>();
 
@@ -32,6 +33,8 @@ namespace Plattformer
         {
             levelWidth = grid.width;
             levelHeight = grid.height;
+            SX = grid.startX;
+            SY = grid.startY;
             InitializeSearchNodes(grid);
         }
 

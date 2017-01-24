@@ -167,8 +167,7 @@ namespace Plattformer
                     //TileGrid
                     if (strings[i][j] == 'g')
                     {
-
-                        tilegrid = new TileGrid(temptex, j, i, 40, 25, 3);
+                        tilegrid = new TileGrid(temptex, j, i, 40, 27, 12);
                     }
                 }
                 
