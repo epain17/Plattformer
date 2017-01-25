@@ -33,8 +33,7 @@ namespace Plattformer
         {
             levelWidth = grid.width;
             levelHeight = grid.height;
-            SX = grid.startX;
-            SY = grid.startY;
+            
             InitializeSearchNodes(grid);
         }
 
@@ -263,7 +262,7 @@ namespace Plattformer
             }
             return finalPath;
         }
-
+     
     }
 }
 

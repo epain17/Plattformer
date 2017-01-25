@@ -18,7 +18,9 @@ namespace Plattformer
             still,
             jump,
             right,
-            left
+            left,
+            up,
+            down
         }
         Direction currentDir = Direction.still;
 
@@ -45,7 +47,7 @@ namespace Plattformer
             return new Rectangle((int)drawPos.X + 10, (int)drawPos.Y, 20, 40);
         }
 
-        public Point myPoint
+        public Point myPosition
         {
             get { return new Point((int)drawPos.X / 40, (int)drawPos.Y / 40); }
         }
@@ -79,15 +81,15 @@ namespace Plattformer
                 alive = true;
                 hasJumped = false;
                 speed.Y = 0;
-                drawPos.Y = b.HitBox().Y - HitBox().Height + 1;
+                drawPos.Y = b.HitBox().Y - HitBox().Height - 4;
             }
 
             //Bottom             
             if (n == 2)
             {
-                hasJumped = true;
-                speed.X = 0;
-                speed.Y = 0.6f;
+                //hasJumped = true;                
+                speed.Y = 0f;
+                drawPos.Y = b.HitBox().Y + HitBox().Height + 4;
             }
 
             // Left            
@@ -106,7 +108,7 @@ namespace Plattformer
 
         public override void Update(GameTime gameTime)
         {
-            speed.Y += gravity;
+            //speed.Y += gravity;
 
             //Animation and Texture switch
             if (standingStill == true)
@@ -151,6 +153,18 @@ namespace Plattformer
                 playerFx = SpriteEffects.None;
             }
 
+            else if(KeyMouseReader.KeyPressed(Keys.Up))
+            {
+                standingStill = false;
+                currentDir = Direction.up;
+            }
+
+            else if (KeyMouseReader.KeyPressed(Keys.Down))
+            {
+                standingStill = false;
+                currentDir = Direction.down;
+            }
+
             else
             {
                 standingStill = true;
@@ -168,12 +182,14 @@ namespace Plattformer
             {
                 case Direction.still:
                     speed.X = 0;
+                    speed.Y = 0;
                     run = false;
                     break;
 
                 case Direction.right:
                     frame++;
                     speed.X = 3;
+                    speed.Y = 0;
 
                     if (run == true)
                     {
@@ -184,9 +200,30 @@ namespace Plattformer
                 case Direction.left:
                     frame++;
                     speed.X = -3f;
+                    speed.Y = 0;
                     if (run == true)
                     {
                         speed.X = -4;
+                    }
+                    break;
+
+                case Direction.up:
+                    frame++;
+                    speed.Y = -3f;
+                    speed.X = 0f;
+                    if (run == true)
+                    {
+                        speed.X = -4;
+                    }
+                    break;
+
+                case Direction.down:
+                    frame++;
+                    speed.Y = 3f;
+                    speed.X = 0;
+                    if (run == true)
+                    {
+                        speed.X = 4;
                     }
                     break;
 

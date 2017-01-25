@@ -19,7 +19,7 @@ namespace Plattformer
             patrol,
             flee,
         }
-        Movement currentMovement = Movement.attack;
+        Movement currentMovement = Movement.patrol;
 
         Vector2 accelaration;
         Vector2 position;
@@ -31,15 +31,20 @@ namespace Plattformer
         Queue<Vector2> waypoints = new Queue<Vector2>();
         Point startPoint, endPoint, previous;
         Pathfinder pathfinder;
-        Point pr;
+        Point pr, p1, p2;
+        Random random;
 
-        double frameTimer, frameInterval;
+        int x, y;
+
+        double searchTimer, searchTimerReset;
+
         float speed;
         float speedS;
-        int aggroRange = 400;
+        int aggroRange = 200;
         int frame;
         int startHp;
         bool changeDirection = false;
+        bool test = true;
 
         SpriteEffects wolfFx;
 
@@ -53,32 +58,65 @@ namespace Plattformer
             accelaration = Vector2.Zero;
             wolfFx = SpriteEffects.None;
 
-            frameTimer = 175;
-            frameInterval = 175;
-            speed = 5f;
+            searchTimer = 1000;
+            searchTimerReset = 1000;
+            speed = 3f;
+
+            x = 0;
+            y = 0;
+
+            random = new Random();
 
         }
 
         public void Update(GameTime gameTime, Point target, TileGrid grid)
         {
-            position += (velocity + accelaration) / 2;
-            FindPath(target, grid);
-            UpdatePos();
+
+            test = false;
+
 
             switch (currentMovement)
             {
 
                 case Movement.attack:
+                    UpdatePos();
+                    position += (velocity + accelaration) / 2;
+                    if (FoundPlayer(target) == 2)
+                    {
+                        currentMovement = Movement.patrol;
+                    }
+                    searchTimer -= gameTime.ElapsedGameTime.TotalMilliseconds;
+                    if (searchTimer <= 0)
+                    {
+                        FindPath(target, grid);
+                        searchTimer = searchTimerReset;
+
+                    }
 
                     break;
 
                 case Movement.sleep:
+                    if (FoundPlayer(target) == 1)
+                        currentMovement = Movement.attack;
+
+
 
                     break;
 
                 case Movement.patrol:
 
-                    break;
+                    UpdatePos();
+                    position += (velocity + accelaration) / 2;
+                    if (waypoints.Count() == 0)
+                    {
+                        SetPatroll(p1, grid);
+                        FindPath(p1, grid);
+
+                    }
+
+                    if (FoundPlayer(target) == 1)
+                        currentMovement = Movement.attack;
+                        break;
 
                 case Movement.flee:
 
@@ -109,9 +147,28 @@ namespace Plattformer
             return new Rectangle((int)position.X, (int)position.Y, 60, 40);
         }
 
-        public Point myPoint
+        public Vector2 myPosition
+        {
+            get { return new Vector2(position.X, position.Y); }
+        }
+
+        public Point myGridPoint
         {
             get { return new Point((int)position.X / 40, (int)position.Y / 40); }
+        }
+
+        private Point SetPatroll(Point point, TileGrid grid)
+        {
+            x = 0;
+            y = 0;
+            while (grid.CheckWalkable(x, y) == 1) 
+            {
+                x = random.Next(1, grid.width);
+                y = random.Next(1, grid.height);
+
+            } 
+
+            return p1 = new Point(x, y);
         }
 
         public void WolfKill()
@@ -120,11 +177,35 @@ namespace Plattformer
             position = new Vector2(2880, 360);
         }
 
+        int GetJumpFrameCount(int deltaY)
+        {
+            if (deltaY <= 0)
+                return 0;
+            else
+            {
+                switch (deltaY)
+                {
+                    case 1:
+                        return 1;
+                    case 2:
+                        return 2;
+                    case 3:
+                        return 5;
+                    case 4:
+                        return 8;
+                    case 5:
+                        return 14;
+                    case 6:
+                        return 21;
+                    default:
+                        return 30;
+                }
+            }
+        }
 
-        //Pathfinding
         float DistanceToWaypoint
         {
-            get { return Vector2.Distance(position, waypoints.Peek()); }
+            get { return Vector2.Distance(new Vector2(position.X + 20, position.Y + 20), new Vector2(waypoints.Peek().X + 20, waypoints.Peek().Y + 20)); }
         }
 
         public void FindPath(Point targetPoint, TileGrid grid)
@@ -132,11 +213,11 @@ namespace Plattformer
             if (waypoints != null)
             {
                 waypoints.Clear();
-                if (waypoints.Count() == 0 && targetPoint != myPoint)
+                if (waypoints.Count() == 0 && targetPoint != myGridPoint)
                 {
                     pathfinder = new Pathfinder(grid);
                     waypoints.Clear();
-                    startPoint = myPoint;
+                    startPoint = myGridPoint;
                     endPoint = targetPoint;
                     waypoints = pathfinder.FindPath(startPoint, endPoint, previous);
                 }
@@ -176,7 +257,7 @@ namespace Plattformer
                 return 1;
             }
 
-            else if (Range(TP) > aggroRange && myPoint != pr)
+            else if (Range(TP) > aggroRange && myGridPoint != pr)
             {
                 return 2;
             }
@@ -189,6 +270,9 @@ namespace Plattformer
             Vector2 range = new Vector2(point.X * 40, point.Y * 40);
             return Vector2.Distance(this.position, range);
         }
+
+
+
     }
 
 

@@ -34,8 +34,8 @@ namespace Plattformer
         public override void Draw(SpriteBatch spriteBatch)
         {
             spriteBatch.Draw(tex, drawPos, Color.White);
-            //Rectangle top = HitBox();
-            //top.Height = 10;
+            Rectangle top = HitBox();
+            top.Height = 10;
 
 
             //Rectangle bottom = HitBox();
@@ -53,10 +53,10 @@ namespace Plattformer
             //right.Y = HitBox().Y + 10;
             //right.Height = HitBox().Height - 20;
 
-            //spriteBatch.Draw(Game1.temptex, left, Color.Red);
-            //spriteBatch.Draw(Game1.temptex, right, Color.Green);
-            //spriteBatch.Draw(Game1.temptex, top, Color.Blue);
-            //spriteBatch.Draw(Game1.temptex, bottom, Color.Pink);
+            //spriteBatch.Draw(GameManager.temptex, left, Color.Red);
+            //spriteBatch.Draw(GameManager.temptex, right, Color.Green);
+            //spriteBatch.Draw(GameManager.temptex, top, Color.Blue);
+            //spriteBatch.Draw(GameManager.temptex, bottom, Color.Pink);
         }
     }
 }

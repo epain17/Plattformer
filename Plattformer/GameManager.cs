@@ -30,6 +30,7 @@ namespace Plattformer
         Decoration dec;
         Teleport teleport;
         TileGrid tilegrid;
+        Tile blockTile;
        
         //Textures 
         Texture2D playerTex, spikeTex, wolfTex, bonTex;
@@ -42,16 +43,17 @@ namespace Plattformer
         Vector2 camPos;
         Pathfinder pathfinder;
 
-        //Textfile read & Lists              
+        //Textfile read & Lists        
+        List<Tile> tiles = new List<Tile>();
         List<GameObject> gameObjects = new List<GameObject>();
         List<String> strings = new List<String>();
         List<Tile> tilesToGrid = new List<Tile>();
 
+  
+
         int blockCounter = 0;
         int lastElement = 0;
-        
-        //Victory bool
-        bool victory = false;
+   
 
         public GameManager(GraphicsDevice gd, SpriteBatch sb, GraphicsDeviceManager graphics, GameWindow gameWindow)
         {
@@ -83,11 +85,14 @@ namespace Plattformer
             //Loading Camera, Level, Background
             camera = new Camera(gd.Viewport);
             LoadLevel();
+            tilegrid = new TileGrid(temptex, 0, 0, 40, 50, 12);
+            SetGrid(tilegrid);
             pathfinder = new Pathfinder(tilegrid);
             backGround = new BackGround(Content, gameWindow);
 
         }
 
+        
         private void LoadLevel()
         {
             //Positions in Level
@@ -116,7 +121,10 @@ namespace Plattformer
                     if (strings[i][j] == 'b')
                     {
                         block = new Block(blockTex, j * 40, i * 40);
+                        blockTile = new Plattformer.Tile(blockTex, new Vector2(j * 40, i * 40), 40);
+                        blockTile.iamOccupied = true;
                         gameObjects.Add(block);
+                        tiles.Add(blockTile);
                         counter++;
                     }
 
@@ -163,12 +171,7 @@ namespace Plattformer
                     {
                         teleport = new Teleport(bonTex, j * 40, i * 40);
                         gameObjects.Add(teleport);
-                    }
-                    //TileGrid
-                    if (strings[i][j] == 'g')
-                    {
-                        tilegrid = new TileGrid(temptex, j, i, 40, 27, 12);
-                    }
+                    }              
                 }
                 
                 if (counter > blockCounter)
@@ -178,12 +181,21 @@ namespace Plattformer
             }
         }
 
+        private void SetGrid(TileGrid grid)
+        {
+            foreach(Tile t in tiles)
+            {
+
+                grid.SetOccupiedGrid(t);
+            }
+        }
+
         public void Update(GameTime gameTime)
         {
            
             //Update Background
             backGround.Update();
-
+            
             //Collision Blocks            
             foreach (GameObject g in gameObjects)
             {
@@ -191,15 +203,11 @@ namespace Plattformer
                 if (g is Block)
                 {
                     int n = player.Collision(g);
-                    //int o = wolf.Collision(g);
                     if (n > 0)
                     {
                         player.HandelCollision(g, n);
                     }
-                    //if (o > 0)
-                    //{
-                    //    wolf.HandelCollision(g, o);
-                    //}
+       
                 }
                 //Spike Collision
                 if (g is Spike)
@@ -209,15 +217,7 @@ namespace Plattformer
                         player.SpikeHit();
                     }
                 }
-                //Bonfire Collision
-                if (g is Bonfire)
-                {
-
-                    //if (player.HitBox().Intersects(g.HitBox()))
-                    //{
-                    //    victory = true;
-                    //}
-                }
+                     
                 //Teleport Collision
                 if (g is Teleport)
                 {
@@ -226,24 +226,10 @@ namespace Plattformer
                         player.Teleport();
                     }
                 }
-                //Wolf collision
-                //if (g is Wolf)
-                //{
-                //    if (player.HitBox().Intersects(g.HitBox()))
-                //    {
-                //        if (player.Pos.Y < g.Pos.Y || player.run == true)
-                //        {
-                //            (g as Wolf).WolfKill();
-                //        }
-                //        else
-                //        {
-                //            player.SpikeHit();
-                //        }
-                //    }
-                //}
+          
             }
 
-            wolf.Update(gameTime, player.myPoint, tilegrid);
+            wolf.Update(gameTime, player.myPosition, tilegrid);
 
             // Camera Update
             if (player.Pos.X > 0 + gameWindow.ClientBounds.Width / 2 && player.Pos.X < blockCounter * 40)
@@ -269,6 +255,8 @@ namespace Plattformer
 
             KeyMouseReader.Update();
         }
+
+        
 
         public void Draw(SpriteBatch spriteBatch)
         {
