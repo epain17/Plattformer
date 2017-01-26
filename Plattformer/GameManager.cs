@@ -85,7 +85,7 @@ namespace Plattformer
             //Loading Camera, Level, Background
             camera = new Camera(gd.Viewport);
             LoadLevel();
-            tilegrid = new TileGrid(temptex, 0, 0, 40, 50, 12);
+            tilegrid = new TileGrid(temptex, 0, 0, 40, 30, 12);
             SetGrid(tilegrid);
             pathfinder = new Pathfinder(tilegrid);
             backGround = new BackGround(Content, gameWindow);
@@ -229,7 +229,7 @@ namespace Plattformer
           
             }
 
-            wolf.Update(gameTime, player.myPosition, tilegrid);
+            wolf.Update(gameTime, player.myPosition, new Point(3, 10), tilegrid);
 
             // Camera Update
             if (player.Pos.X > 0 + gameWindow.ClientBounds.Width / 2 && player.Pos.X < blockCounter * 40)

@@ -38,6 +38,8 @@ namespace Plattformer
 
         double searchTimer, searchTimerReset;
 
+        double energy, energyTimer, energyTimerReset;
+
         float speed;
         float speedS;
         int aggroRange = 200;
@@ -60,7 +62,12 @@ namespace Plattformer
 
             searchTimer = 1000;
             searchTimerReset = 1000;
+
+            energyTimer = 5000;
+            energyTimerReset = 5000;
+
             speed = 3f;
+            energy = 10;
 
             x = 0;
             y = 0;
@@ -69,11 +76,11 @@ namespace Plattformer
 
         }
 
-        public void Update(GameTime gameTime, Point target, TileGrid grid)
+        public void Update(GameTime gameTime, Point target, Point sleepPoint, TileGrid grid)
         {
 
             test = false;
-
+            
 
             switch (currentMovement)
             {
@@ -81,25 +88,42 @@ namespace Plattformer
                 case Movement.attack:
                     UpdatePos();
                     position += (velocity + accelaration) / 2;
+                    searchTimer -= gameTime.ElapsedGameTime.TotalMilliseconds;
+
                     if (FoundPlayer(target) == 2)
                     {
                         currentMovement = Movement.patrol;
                     }
-                    searchTimer -= gameTime.ElapsedGameTime.TotalMilliseconds;
-                    if (searchTimer <= 0)
+                    else if (searchTimer <= 0)
                     {
                         FindPath(target, grid);
                         searchTimer = searchTimerReset;
 
                     }
+                    else if (energy < 0 && FoundPlayer(target) != 1)
+                    {
+                        FindPath(sleepPoint, grid);
+                        currentMovement = Movement.sleep;
+                    }
 
                     break;
 
                 case Movement.sleep:
-                    if (FoundPlayer(target) == 1)
-                        currentMovement = Movement.attack;
+                                      
+                    UpdatePos();
+                    position += (velocity + accelaration) / 2;
 
-
+                    if (waypoints.Count() == 0)
+                    {
+                        energyTimer -= gameTime.ElapsedGameTime.TotalMilliseconds;
+                        if(energyTimer < 0)
+                        {
+                            energy = 20;
+                            energyTimer = energyTimerReset;
+                            currentMovement = Movement.patrol;
+                        }
+                    }
+              
 
                     break;
 
@@ -111,12 +135,18 @@ namespace Plattformer
                     {
                         SetPatroll(p1, grid);
                         FindPath(p1, grid);
+                    }
 
+                    if (energy <= 0)
+                    {
+                        FindPath(sleepPoint, grid);
+
+                        currentMovement = Movement.sleep;
                     }
 
                     if (FoundPlayer(target) == 1)
                         currentMovement = Movement.attack;
-                        break;
+                    break;
 
                 case Movement.flee:
 
@@ -161,47 +191,16 @@ namespace Plattformer
         {
             x = 0;
             y = 0;
-            while (grid.CheckWalkable(x, y) == 1) 
+            while (grid.CheckWalkable(x, y) == 1)
             {
                 x = random.Next(1, grid.width);
                 y = random.Next(1, grid.height);
 
-            } 
+            }
 
             return p1 = new Point(x, y);
         }
 
-        public void WolfKill()
-        {
-
-            position = new Vector2(2880, 360);
-        }
-
-        int GetJumpFrameCount(int deltaY)
-        {
-            if (deltaY <= 0)
-                return 0;
-            else
-            {
-                switch (deltaY)
-                {
-                    case 1:
-                        return 1;
-                    case 2:
-                        return 2;
-                    case 3:
-                        return 5;
-                    case 4:
-                        return 8;
-                    case 5:
-                        return 14;
-                    case 6:
-                        return 21;
-                    default:
-                        return 30;
-                }
-            }
-        }
 
         float DistanceToWaypoint
         {
@@ -237,6 +236,8 @@ namespace Plattformer
                         position = waypoints.Peek();
                         previous = new Point((int)waypoints.Peek().X / 40, (int)waypoints.Peek().Y / 40);
                         waypoints.Dequeue();
+                        if(energy >0)
+                        --energy;
                     }
                     else
                     {

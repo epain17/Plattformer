@@ -41,7 +41,7 @@ namespace Plattformer
         {
             spriteBatch = new SpriteBatch(GraphicsDevice);
             backgroundMusic = Content.Load<Song>("Bloodborne OST - Hunter's Dream");
-            MediaPlayer.Play(backgroundMusic);
+            //MediaPlayer.Play(backgroundMusic);
 
             gm = new GameManager(GraphicsDevice, spriteBatch, graphics, Window);
             gm.Load(Content);
