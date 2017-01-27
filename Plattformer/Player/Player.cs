@@ -49,7 +49,7 @@ namespace Plattformer
 
         public Point myPosition
         {
-            get { return new Point((int)drawPos.X / 40, (int)drawPos.Y / 40); }
+            get { return new Point(((int)drawPos.X+20) / 40, ((int)drawPos.Y+20) / 40); }
         }
 
         //Constructor
@@ -76,33 +76,33 @@ namespace Plattformer
         public override void HandelCollision(GameObject b, int n)
         {
             //Top
-            if (n == 1)
-            {
-                alive = true;
-                hasJumped = false;
-                speed.Y = 0;
-                drawPos.Y = b.HitBox().Y - HitBox().Height - 4;
-            }
+            //if (n == 1)
+            //{
+            //    alive = true;
+            //    hasJumped = false;
+            //    speed.Y = 0;
+            //    drawPos.Y = b.HitBox().Y - HitBox().Height -2;
+            //}
 
-            //Bottom             
-            if (n == 2)
-            {
-                //hasJumped = true;                
-                speed.Y = 0f;
-                drawPos.Y = b.HitBox().Y + HitBox().Height + 4;
-            }
+            ////Bottom             
+            //if (n == 2)
+            //{
+            //    //hasJumped = true;                
+            //    speed.Y = 0f;
+            //    drawPos.Y = b.HitBox().Y + HitBox().Height + 4;
+            //}
 
-            // Left            
-            if (n == 3)
-            {
-                drawPos.X = drawPos.X - 4;
-            }
+            //// Left            
+            //if (n == 3)
+            //{
+            //    drawPos.X = drawPos.X - 4;
+            //}
 
-            // Right            
-            if (n == 4)
-            {
-                drawPos.X = drawPos.X + 4;
-            }
+            //// Right            
+            //if (n == 4)
+            //{
+            //    drawPos.X = drawPos.X + 4;
+            //}
 
         }
 
@@ -188,7 +188,8 @@ namespace Plattformer
 
                 case Direction.right:
                     frame++;
-                    speed.X = 3;
+                    drawPos.X += 40;
+                    //speed.X = 3;
                     speed.Y = 0;
 
                     if (run == true)
@@ -199,7 +200,8 @@ namespace Plattformer
 
                 case Direction.left:
                     frame++;
-                    speed.X = -3f;
+                    drawPos.X -= 40;
+                    //speed.X = -3f;
                     speed.Y = 0;
                     if (run == true)
                     {
@@ -209,7 +211,8 @@ namespace Plattformer
 
                 case Direction.up:
                     frame++;
-                    speed.Y = -3f;
+                    drawPos.Y -= 40;
+                    //speed.Y = -3f;
                     speed.X = 0f;
                     if (run == true)
                     {
@@ -219,7 +222,8 @@ namespace Plattformer
 
                 case Direction.down:
                     frame++;
-                    speed.Y = 3f;
+                    drawPos.Y += 40;
+                    //speed.Y = 3f;
                     speed.X = 0;
                     if (run == true)
                     {

@@ -37,7 +37,7 @@ namespace Plattformer
         int x, y;
 
         double searchTimer, searchTimerReset;
-
+        double patrolTimer, patrolTimerReset;
         double energy, energyTimer, energyTimerReset;
 
         float speed;
@@ -60,14 +60,17 @@ namespace Plattformer
             accelaration = Vector2.Zero;
             wolfFx = SpriteEffects.None;
 
-            searchTimer = 1000;
-            searchTimerReset = 1000;
+            searchTimer = 200;
+            searchTimerReset = 200;
+
+            patrolTimer = 1000;
+            patrolTimerReset = 1000;
 
             energyTimer = 5000;
             energyTimerReset = 5000;
 
-            speed = 3f;
-            energy = 10;
+            speed = 0f;
+            energy = 30;
 
             x = 0;
             y = 0;
@@ -80,72 +83,85 @@ namespace Plattformer
         {
 
             test = false;
-            
+
 
             switch (currentMovement)
             {
 
                 case Movement.attack:
-                    UpdatePos();
-                    position += (velocity + accelaration) / 2;
-                    searchTimer -= gameTime.ElapsedGameTime.TotalMilliseconds;
-
-                    if (FoundPlayer(target) == 2)
-                    {
-                        currentMovement = Movement.patrol;
-                    }
-                    else if (searchTimer <= 0)
+                    if (grid.CheckWalkable(target.X, target.Y) == 0 && searchTimer < 0)
                     {
                         FindPath(target, grid);
                         searchTimer = searchTimerReset;
 
+                    }
+
+                    else if (FoundPlayer(target) == 2)
+                    {
+                        currentMovement = Movement.patrol;
                     }
                     else if (energy < 0 && FoundPlayer(target) != 1)
                     {
                         FindPath(sleepPoint, grid);
                         currentMovement = Movement.sleep;
                     }
-
-                    break;
-
-                case Movement.sleep:
-                                      
+                    searchTimer -= gameTime.ElapsedGameTime.TotalMilliseconds;
+                    speed = 6f;
                     UpdatePos();
                     position += (velocity + accelaration) / 2;
-
-                    if (waypoints.Count() == 0)
-                    {
-                        energyTimer -= gameTime.ElapsedGameTime.TotalMilliseconds;
-                        if(energyTimer < 0)
-                        {
-                            energy = 20;
-                            energyTimer = energyTimerReset;
-                            currentMovement = Movement.patrol;
-                        }
-                    }
-              
 
                     break;
 
                 case Movement.patrol:
 
-                    UpdatePos();
-                    position += (velocity + accelaration) / 2;
-                    if (waypoints.Count() == 0)
+                    if (patrolTimer < 0)
                     {
                         SetPatroll(p1, grid);
                         FindPath(p1, grid);
                     }
 
-                    if (energy <= 0)
+                    if (energy <= 0 && FoundPlayer(target) != 1)
                     {
                         FindPath(sleepPoint, grid);
-
                         currentMovement = Movement.sleep;
                     }
 
-                    if (FoundPlayer(target) == 1)
+                    else if (FoundPlayer(target) == 1)
+                    {
+                        waypoints.Clear();
                         currentMovement = Movement.attack;
+                    }
+                    patrolTimer -= gameTime.ElapsedGameTime.TotalMilliseconds;
+                    speed = 2f;
+                    UpdatePos();
+                    position += (velocity + accelaration) / 2;
+
+                    break;
+
+                case Movement.sleep:
+
+                    if (FoundPlayer(target) == 1)
+                    {
+                        energy = 0;
+                        energyTimer = energyTimerReset;
+                        currentMovement = Movement.attack;
+                    }
+
+                    if (waypoints.Count() == 0)
+                    {
+                        energyTimer -= gameTime.ElapsedGameTime.TotalMilliseconds;
+                        if (energyTimer < 0)
+                        {
+                            energy = 30;
+                            energyTimer = energyTimerReset;
+                            currentMovement = Movement.patrol;
+                        }
+                    }
+                    speed = 2f;
+                    UpdatePos();
+                    position += (velocity + accelaration) / 2;
+
+
                     break;
 
                 case Movement.flee:
@@ -159,16 +175,16 @@ namespace Plattformer
         public void Draw(SpriteBatch spriteBatch)
         {
 
-            spriteBatch.Draw(tex, position, sourceRect, Color.White, 0, new Vector2(), 1, SpriteEffects.None, 1);
+            //spriteBatch.Draw(tex2, position, sourceRect, Color.Red, 0, new Vector2(), 1, SpriteEffects.None, 1);
+            spriteBatch.Draw(tex2, position, Color.Red);
+            //if (waypoints != null)
+            //{
 
-            if (waypoints != null)
-            {
-
-                foreach (Vector2 v in waypoints)
-                {
-                    spriteBatch.Draw(tex2, new Vector2(v.X, v.Y), Color.White);
-                }
-            }
+            //    foreach (Vector2 v in waypoints)
+            //    {
+            //        spriteBatch.Draw(tex2, new Vector2(v.X, v.Y), Color.White);
+            //    }
+            //}
 
         }
 
@@ -211,13 +227,17 @@ namespace Plattformer
         {
             if (waypoints != null)
             {
-                waypoints.Clear();
+                //waypoints.Clear();
                 if (waypoints.Count() == 0 && targetPoint != myGridPoint)
                 {
                     pathfinder = new Pathfinder(grid);
                     waypoints.Clear();
                     startPoint = myGridPoint;
                     endPoint = targetPoint;
+                    if(grid.CheckWalkable(previous.X, previous.Y) != 0 && previous.X != 0 && previous.Y != 0)
+                    {
+                        Console.WriteLine("fuck");
+                    }
                     waypoints = pathfinder.FindPath(startPoint, endPoint, previous);
                 }
 
@@ -234,10 +254,10 @@ namespace Plattformer
                     if (DistanceToWaypoint < 2f)
                     {
                         position = waypoints.Peek();
-                        previous = new Point((int)waypoints.Peek().X / 40, (int)waypoints.Peek().Y / 40);
+                        previous = new Point(((int)waypoints.Peek().X+20) / 40, ((int)waypoints.Peek().Y+20) / 40);
                         waypoints.Dequeue();
-                        if(energy >0)
-                        --energy;
+                        if (energy > 0)
+                            --energy;
                     }
                     else
                     {

@@ -85,7 +85,7 @@ namespace Plattformer
             //Loading Camera, Level, Background
             camera = new Camera(gd.Viewport);
             LoadLevel();
-            tilegrid = new TileGrid(temptex, 0, 0, 40, 30, 12);
+            tilegrid = new TileGrid(temptex, 0, 0, 40, 20, 12);
             SetGrid(tilegrid);
             pathfinder = new Pathfinder(tilegrid);
             backGround = new BackGround(Content, gameWindow);
