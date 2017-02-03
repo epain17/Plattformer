@@ -85,7 +85,7 @@ namespace Plattformer
             //Loading Camera, Level, Background
             camera = new Camera(gd.Viewport);
             LoadLevel();
-            tilegrid = new TileGrid(temptex, 0, 0, 40, 20, 12);
+            tilegrid = new TileGrid(temptex, 0, 0, 40, 20, 14);
             SetGrid(tilegrid);
             pathfinder = new Pathfinder(tilegrid);
             backGround = new BackGround(Content, gameWindow);
@@ -195,40 +195,40 @@ namespace Plattformer
            
             //Update Background
             backGround.Update();
-            
-            //Collision Blocks            
-            foreach (GameObject g in gameObjects)
-            {
-                g.Update(gameTime);
-                if (g is Block)
-                {
-                    int n = player.Collision(g);
-                    if (n > 0)
-                    {
-                        player.HandelCollision(g, n);
-                    }
-       
-                }
-                //Spike Collision
-                if (g is Spike)
-                {
-                    if (player.PixelCollision(g as Spike))
-                    {
-                        player.SpikeHit();
-                    }
-                }
-                     
-                //Teleport Collision
-                if (g is Teleport)
-                {
-                    if (player.HitBox().Intersects(g.HitBox()))
-                    {
-                        player.Teleport();
-                    }
-                }
-          
-            }
 
+            //Collision Blocks            
+            //foreach (GameObject g in gameObjects)
+            //{
+            //    g.Update(gameTime);
+            //    if (g is Block)
+            //    {
+            //        int n = player.Collision(g);
+            //        if (n > 0)
+            //        {
+            //            player.HandelCollision(g, n);
+            //        }
+
+            //    }
+            //    //Spike Collision
+            //    if (g is Spike)
+            //    {
+            //        if (player.PixelCollision(g as Spike))
+            //        {
+            //            player.SpikeHit();
+            //        }
+            //    }
+
+            //    //Teleport Collision
+            //    if (g is Teleport)
+            //    {
+            //        if (player.HitBox().Intersects(g.HitBox()))
+            //        {
+            //            player.Teleport();
+            //        }
+            //    }
+
+            //}
+            player.Update(gameTime, tilegrid);
             wolf.Update(gameTime, player.myPosition, new Point(3, 10), tilegrid);
 
             // Camera Update

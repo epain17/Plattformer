@@ -1,6 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using Plattformer.Enemy;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -32,13 +33,16 @@ namespace Plattformer
         public bool run = false;
 
         //Player speed and gravity
-        Vector2 speed;
+        Vector2 velocity;
+        float speed = 2.0f;
         float gravity = 0.5f;
+        float distance = 0.0f;
 
         //Player Textures and Animation        
         SpriteEffects playerFx;
         private double frameTimer, frameInterval;
         private int frame;
+
 
 
         //Player HitBox
@@ -49,7 +53,7 @@ namespace Plattformer
 
         public Point myPosition
         {
-            get { return new Point(((int)drawPos.X+20) / 40, ((int)drawPos.Y+20) / 40); }
+            get { return new Point(((int)drawPos.X + 20) / 40, ((int)drawPos.Y + 20) / 40); }
         }
 
         //Constructor
@@ -60,6 +64,7 @@ namespace Plattformer
             frameTimer = 110;
             frameInterval = 110;
             playerFx = SpriteEffects.None;
+
         }
 
         public void SpikeHit()
@@ -106,7 +111,33 @@ namespace Plattformer
 
         }
 
-        public override void Update(GameTime gameTime)
+        private void UpdatePostion(GameTime gameTime)
+        {
+            float tempPosX, tempPosY;
+            tempPosX = drawPos.X;
+            tempPosY = drawPos.Y;
+            while (drawPos.X != tempPosX + 40|| drawPos.X != tempPosX - 40|| drawPos.Y != tempPosY + 40 || drawPos.Y != tempPosY - 40)
+            {
+
+                drawPos += (velocity * (float)gameTime.ElapsedGameTime.TotalSeconds);
+                //increment total distance indepedent of direction/axis
+                distance += Math.Abs(velocity.X) + Math.Abs(velocity.Y);
+
+                //test if we've travelled far enough
+                if (distance >= 40)
+                {
+                    //reset distance
+                    distance = 0.0f;
+
+                    //stop
+                    velocity = Vector2.Zero;
+                    break;
+                    //TODO: SNAP TO TILE
+                }
+            }
+        }
+
+        public override void Update(GameTime gameTime, TileGrid grid)
         {
             //speed.Y += gravity;
 
@@ -139,30 +170,43 @@ namespace Plattformer
             }
 
             //Input
-            if (KeyMouseReader.KeyPressed(Keys.Left))
+            if (KeyMouseReader.KeyPressed(Keys.Left) && KeyMouseReader.oldKeyState != KeyMouseReader.keyState)
             {
-                standingStill = false;
-                currentDir = Direction.left;
-                playerFx = SpriteEffects.FlipHorizontally;
+                if (grid.Check(myPoint.X - 1, myPoint.Y) != 1)
+                {
+                    standingStill = false;
+                    currentDir = Direction.left;
+                    playerFx = SpriteEffects.FlipHorizontally;
+                }
             }
 
-            else if (KeyMouseReader.KeyPressed(Keys.Right))
+            else if (KeyMouseReader.KeyPressed(Keys.Right) && KeyMouseReader.oldKeyState != KeyMouseReader.keyState)
             {
-                standingStill = false;
-                currentDir = Direction.right;
-                playerFx = SpriteEffects.None;
+                if (grid.Check(myPoint.X + 1, myPoint.Y) != 1)
+                {
+                    standingStill = false;
+                    currentDir = Direction.right;
+                    playerFx = SpriteEffects.None;
+                }
             }
 
-            else if(KeyMouseReader.KeyPressed(Keys.Up))
+            else if (KeyMouseReader.KeyPressed(Keys.Up) && KeyMouseReader.oldKeyState != KeyMouseReader.keyState)
             {
-                standingStill = false;
-                currentDir = Direction.up;
+                if (grid.Check(myPoint.X, myPoint.Y - 1) != 1)
+                {
+                    standingStill = false;
+                    currentDir = Direction.up;
+                }
             }
 
-            else if (KeyMouseReader.KeyPressed(Keys.Down))
+            else if (KeyMouseReader.KeyPressed(Keys.Down) && KeyMouseReader.oldKeyState != KeyMouseReader.keyState)
             {
-                standingStill = false;
-                currentDir = Direction.down;
+                if (grid.Check(myPoint.X, myPoint.Y + 1) != 1)
+                {
+                    standingStill = false;
+                    currentDir = Direction.down;
+
+                }
             }
 
             else
@@ -177,63 +221,64 @@ namespace Plattformer
                 currentDir = Direction.jump;
             }
 
-            drawPos += speed;
+            //drawPos += speed;
             switch (currentDir)
             {
                 case Direction.still:
-                    speed.X = 0;
-                    speed.Y = 0;
+                    velocity = new Vector2(0, 0);
                     run = false;
                     break;
 
                 case Direction.right:
                     frame++;
-                    drawPos.X += 40;
-                    //speed.X = 3;
-                    speed.Y = 0;
+                    //drawPos.X += 40;
+                    velocity = new Vector2(speed, 0);
+                    UpdatePostion(gameTime);
 
                     if (run == true)
                     {
-                        speed.X = 4;
+                        //speed.X = 4;
                     }
                     break;
 
                 case Direction.left:
                     frame++;
-                    drawPos.X -= 40;
-                    //speed.X = -3f;
-                    speed.Y = 0;
-                    if (run == true)
-                    {
-                        speed.X = -4;
-                    }
+                    //drawPos.X -= 40;
+                    velocity = new Vector2(-speed, 0);
+                    UpdatePostion(gameTime);
+
+                    //if (run == true)
+                    //{
+                    //    speed.X = -4;
+                    //}
                     break;
 
                 case Direction.up:
                     frame++;
-                    drawPos.Y -= 40;
-                    //speed.Y = -3f;
-                    speed.X = 0f;
-                    if (run == true)
-                    {
-                        speed.X = -4;
-                    }
+                    //drawPos.Y -= 40;
+                    velocity = new Vector2(0, -speed);
+                    UpdatePostion(gameTime);
+
+                    //if (run == true)
+                    //{
+                    //    speed.X = -4;
+                    //}
                     break;
 
                 case Direction.down:
                     frame++;
-                    drawPos.Y += 40;
-                    //speed.Y = 3f;
-                    speed.X = 0;
-                    if (run == true)
-                    {
-                        speed.X = 4;
-                    }
+                    //drawPos.Y += 40;
+                    velocity = new Vector2(0, speed);
+                    UpdatePostion(gameTime);
+                    //if (run == true)
+                    //{
+                    //    speed.X = 4;
+                    //}
                     break;
 
                 case Direction.jump:
-                    drawPos.Y -= 1;
-                    speed.Y = -10f;
+                    //drawPos.Y -= 1;
+                    //speed.Y = -10f;
                     run = false;
                     hasJumped = true;
                     break;

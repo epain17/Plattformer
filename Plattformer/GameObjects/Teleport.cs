@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using Plattformer.Enemy;
 
 namespace Plattformer
 {
@@ -33,7 +34,7 @@ namespace Plattformer
 
         }
 
-        public override void Update(GameTime gameTime)
+        public override void Update(GameTime gameTime, TileGrid grid)
         {
             frameTimer -= gameTime.ElapsedGameTime.TotalMilliseconds;
             if (frameTimer <= 0)

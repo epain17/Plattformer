@@ -61,6 +61,20 @@ namespace Plattformer.Enemy
             return 0;
         }
 
+        public int Check(int cellX, int cellY)
+        {
+            if (tileGrid[cellX, cellY].iamOccupied == false && tileGrid[cellX, cellY] != null)
+            {
+                return 0;
+            }
+            else
+            {
+                return 1;
+            }
+
+            
+        }
+
         public void SetOccupiedGrid(Tile target)
         {
             for (int i = 0; i < width; i++)
