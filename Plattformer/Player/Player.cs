@@ -143,7 +143,7 @@ namespace Plattformer
 
             //Animation and Texture switch
 
-            Console.WriteLine(Distance);
+            Console.WriteLine(myPoint);
 
             drawPos += (velocity);
 
@@ -166,69 +166,22 @@ namespace Plattformer
 
                 case Direction.right:
                     frame++;
-                    //drawPos.X += 40;
-                    //velocity = new Vector2(speed, 0);
-                    UpdatePostion(gameTime);
-                    //currentDir = Direction.still;
-
-
-                    if (run == true)
-                    {
-                        //speed.X = 4;
-                    }
+                    UpdatePostion(gameTime);           
                     break;
 
                 case Direction.left:
-                    frame++;
-                    //drawPos.X -= 40;
-                    //velocity = new Vector2(-speed, 0);
-                    newPos = new Vector2(drawPos.X - 40, drawPos.Y);
+                    frame++;        
                     UpdatePostion(gameTime);
-                    currentDir = Direction.still;
-
-
-                    //if (run == true)
-                    //{
-                    //    speed.X = -4;
-                    //}
                     break;
 
                 case Direction.up:
-                    frame++;
-                    //drawPos.Y -= 40;
-                    //velocity = new Vector2(0, -speed);
-                    newPos = new Vector2(drawPos.X, drawPos.Y - 40);
+                    frame++;         
                     UpdatePostion(gameTime);
-                    currentDir = Direction.still;
-
-                    //if (run == true)
-                    //{
-                    //    speed.X = -4;
-                    //}
                     break;
 
                 case Direction.down:
-                    frame++;
-                    //drawPos.Y += 40;
-                    //velocity = new Vector2(0, speed);
-                    newPos = new Vector2(drawPos.X, drawPos.Y + 40);
-
-
+                    frame++;            
                     UpdatePostion(gameTime);
-
-
-
-                    //if (run == true)
-                    //{
-                    //    speed.X = 4;
-                    //}
-                    break;
-
-                case Direction.jump:
-                    //drawPos.Y -= 1;
-                    //speed.Y = -10f;
-                    run = false;
-                    hasJumped = true;
                     break;
 
             }
@@ -266,6 +219,8 @@ namespace Plattformer
                 if (grid.Check(myPoint.X - 1, myPoint.Y) != 1)
                 {
                     standingStill = false;
+                    newPos = new Vector2(drawPos.X - 40, drawPos.Y);
+
                     currentDir = Direction.left;
                     playerFx = SpriteEffects.FlipHorizontally;
                 }
@@ -288,6 +243,9 @@ namespace Plattformer
                 if (grid.Check(myPoint.X, myPoint.Y - 1) != 1)
                 {
                     standingStill = false;
+                    newPos = new Vector2(drawPos.X, drawPos.Y - 40);
+
+                
                     currentDir = Direction.up;
                 }
             }
@@ -297,6 +255,8 @@ namespace Plattformer
                 if (grid.Check(myPoint.X, myPoint.Y + 1) != 1)
                 {
                     standingStill = false;
+                    newPos = new Vector2(drawPos.X, drawPos.Y + 40);
+
                     currentDir = Direction.down;
 
                 }
