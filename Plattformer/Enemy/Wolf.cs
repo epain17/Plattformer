@@ -106,8 +106,11 @@ namespace Plattformer
                         currentMovement = Movement.sleep;
                     }
                     searchTimer -= gameTime.ElapsedGameTime.TotalMilliseconds;
-                    speed = 6f;
-                    UpdatePos();
+                    speed = 60f;
+                    if (waypoints.Count() != 0 && waypoints != null)
+                    {
+                        UpdatePosition(waypoints.Peek(), (float)gameTime.ElapsedGameTime.TotalSeconds);
+                    } 
                     position += (velocity + accelaration) / 2;
 
                     break;
@@ -132,8 +135,11 @@ namespace Plattformer
                         currentMovement = Movement.attack;
                     }
                     patrolTimer -= gameTime.ElapsedGameTime.TotalMilliseconds;
-                    speed = 2f;
-                    UpdatePos();
+                    speed = 40f;
+                    if (waypoints.Count() != 0 && waypoints != null)
+                    {
+                        UpdatePosition(waypoints.Peek(), (float)gameTime.ElapsedGameTime.TotalSeconds);
+                    }
                     position += (velocity + accelaration) / 2;
 
                     break;
@@ -157,8 +163,12 @@ namespace Plattformer
                             currentMovement = Movement.patrol;
                         }
                     }
-                    speed = 2f;
-                    UpdatePos();
+                    speed = 40f;
+                    if(waypoints.Count() != 0 && waypoints != null)
+                    {
+                        UpdatePosition(waypoints.Peek(), (float)gameTime.ElapsedGameTime.TotalSeconds);
+                    }
+                   // UpdatePos();
                     position += (velocity + accelaration) / 2;
 
 
@@ -220,7 +230,7 @@ namespace Plattformer
 
         float DistanceToWaypoint
         {
-            get { return Vector2.Distance(new Vector2(position.X + 20, position.Y + 20), new Vector2(waypoints.Peek().X + 20, waypoints.Peek().Y + 20)); }
+            get { return Vector2.Distance(new Vector2(position.X, position.Y), new Vector2(waypoints.Peek().X, waypoints.Peek().Y)); }
         }
 
         public void FindPath(Point targetPoint, TileGrid grid)
@@ -254,7 +264,7 @@ namespace Plattformer
                     if (DistanceToWaypoint < 2f)
                     {
                         position = waypoints.Peek();
-                        previous = new Point(((int)waypoints.Peek().X+20) / 40, ((int)waypoints.Peek().Y+20) / 40);
+                        previous = new Point(((int)waypoints.Peek().X) / 40, ((int)waypoints.Peek().Y) / 40);
                         waypoints.Dequeue();
                         if (energy > 0)
                             --energy;
@@ -269,6 +279,25 @@ namespace Plattformer
                 else
                     velocity = Vector2.Zero;
             }
+        }
+
+        private bool UpdatePosition(Vector2 goal, float elapsed)
+        {
+            if(position == goal)
+            {
+                return true;
+            }
+            Vector2 direction = Vector2.Normalize(goal - position);
+            position += direction * speed * elapsed;
+            if (Math.Abs(Vector2.Dot(direction, Vector2.Normalize(goal - position)) + 1) < 0.1f)
+            {
+                position = goal;
+                waypoints.Dequeue();
+            }
+
+
+            return position == goal;
+
         }
 
         private int FoundPlayer(Point TP)

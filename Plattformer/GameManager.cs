@@ -112,7 +112,7 @@ namespace Plattformer
                     //Player
                     if (strings[i][j] == 'p')
                     {
-                        player = new Player(playerTex, (j * 40), i * 40);
+                        player = new Player(blockTex, (j * 40), i * 40);
                         camPos.X = 1000 / 2;
                         camPos.Y = player.Pos.Y;
                         gameObjects.Add(player);

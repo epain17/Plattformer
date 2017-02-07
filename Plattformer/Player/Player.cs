@@ -35,7 +35,8 @@ namespace Plattformer
         //Player speed and gravity
         Vector2 velocity;
         Vector2 newPos;
-        float speed = 1.0f;
+        Point point;
+        float speed = 100.0f;
         float gravity = 0.5f;
 
         //Player Textures and Animation        
@@ -53,7 +54,8 @@ namespace Plattformer
 
         public Point myPosition
         {
-            get { return new Point(((int)drawPos.X + 20) / 40, ((int)drawPos.Y + 20) / 40); }
+            get { return new Point(((int)drawPos.X) / 40, ((int)drawPos.Y) / 40); }
+            set { myPosition = value; }
         }
 
         //Constructor
@@ -77,75 +79,38 @@ namespace Plattformer
             drawPos = new Vector2(3760, 80);
         }
 
-
-        //Collision handle with Platforms
-        public override void HandelCollision(GameObject b, int n)
-        {
-            //Top
-            //if (n == 1)
-            //{
-            //    alive = true;
-            //    hasJumped = false;
-            //    speed.Y = 0;
-            //    drawPos.Y = b.HitBox().Y - HitBox().Height -2;
-            //}
-
-            ////Bottom             
-            //if (n == 2)
-            //{
-            //    //hasJumped = true;                
-            //    speed.Y = 0f;
-            //    drawPos.Y = b.HitBox().Y + HitBox().Height + 4;
-            //}
-
-            //// Left            
-            //if (n == 3)
-            //{
-            //    drawPos.X = drawPos.X - 4;
-            //}
-
-            //// Right            
-            //if (n == 4)
-            //{
-            //    drawPos.X = drawPos.X + 4;
-            //}
-
-        }
-
         float Distance
         {
             get { return Vector2.Distance(drawPos, newPos); }
         }
 
-        private void UpdatePostion(GameTime gameTime)
+        private bool UpdatePostion(Vector2 goal, float elapsed)
         {
-            Vector2 direction = newPos - drawPos;
-            direction.Normalize();
-
-            if (Distance != 0)
+        
+            if (drawPos == goal) return true;
+            Vector2 direction = Vector2.Normalize(goal - drawPos);
+            drawPos += direction * speed * elapsed;
+            standingStill = false;
+            if (Math.Abs(Vector2.Dot(direction, Vector2.Normalize(goal - drawPos)) + 1) < 0.1f)
             {
-                velocity = Vector2.Multiply(direction, speed);
-
-            }
-
-            else
-            {
-                newPos = drawPos;
-                currentDir = Direction.still;
+                drawPos = goal;
+                standingStill = true;
             }
 
 
+            return drawPos == goal;
         }
 
         public override void Update(GameTime gameTime, TileGrid grid)
         {
-            //speed.Y += gravity;
-
-            //Animation and Texture switch
 
             Console.WriteLine(myPoint);
 
-            drawPos += (velocity);
+            if (velocity != Vector2.Zero)
+            {
+                drawPos += (velocity);
+
+            }
 
             Animation(gameTime);
 
@@ -157,8 +122,6 @@ namespace Plattformer
             switch (currentDir)
             {
                 case Direction.still:
-                    //UpdatePostion(gameTime);
-
                     newPos = drawPos;
                     velocity = new Vector2(0, 0);
                     run = false;
@@ -166,24 +129,81 @@ namespace Plattformer
 
                 case Direction.right:
                     frame++;
-                    UpdatePostion(gameTime);           
+                    UpdatePostion(newPos, (float)gameTime.ElapsedGameTime.TotalSeconds);
                     break;
 
                 case Direction.left:
-                    frame++;        
-                    UpdatePostion(gameTime);
+                    frame++;
+                    UpdatePostion(newPos, (float)gameTime.ElapsedGameTime.TotalSeconds);
                     break;
 
                 case Direction.up:
-                    frame++;         
-                    UpdatePostion(gameTime);
+                    frame++;
+                    UpdatePostion(newPos, (float)gameTime.ElapsedGameTime.TotalSeconds);
                     break;
 
                 case Direction.down:
-                    frame++;            
-                    UpdatePostion(gameTime);
+                    frame++;
+                    UpdatePostion(newPos, (float)gameTime.ElapsedGameTime.TotalSeconds);
                     break;
 
+            }
+        }
+
+        private void KeyInput(TileGrid grid)
+        {
+            //Input
+            if (KeyMouseReader.KeyPressed(Keys.Left) /*&& KeyMouseReader.oldKeyState != KeyMouseReader.keyState*/ && standingStill == true)
+            {
+                if (grid.Check(myPoint.X - 1, myPoint.Y) != 1)
+                {
+                    standingStill = false;
+                    newPos = new Vector2(drawPos.X - 40, drawPos.Y);
+
+                    currentDir = Direction.left;
+                    playerFx = SpriteEffects.FlipHorizontally;
+                }
+            }
+
+            else if (KeyMouseReader.KeyPressed(Keys.Right) /*&& KeyMouseReader.oldKeyState != KeyMouseReader.keyState*/ && standingStill == true)
+            {
+                if (grid.Check(myPoint.X + 1, myPoint.Y) != 1)
+                {
+                    standingStill = false;
+                    newPos = new Vector2(drawPos.X + 40, drawPos.Y);
+
+                    currentDir = Direction.right;
+                    playerFx = SpriteEffects.None;
+                }
+            }
+
+            else if (KeyMouseReader.KeyPressed(Keys.Up) /*&& KeyMouseReader.oldKeyState != KeyMouseReader.keyState*/ && standingStill == true)
+            {
+                if (grid.Check(myPoint.X, myPoint.Y - 1) != 1)
+                {
+                    standingStill = false;
+                    newPos = new Vector2((myPosition.X * 40), (myPosition.Y * 40) - 40);
+
+
+                    currentDir = Direction.up;
+                }
+            }
+
+            else if (KeyMouseReader.KeyPressed(Keys.Down) /*&& KeyMouseReader.oldKeyState != KeyMouseReader.keyState*/ && standingStill == true)
+            {
+                if (grid.Check(myPoint.X, myPoint.Y + 1) != 1)
+                {
+                    standingStill = false;
+                    newPos = new Vector2((myPosition.X * 40), (myPosition.Y * 40) + 40);
+
+                    currentDir = Direction.down;
+
+                }
+            }
+
+            else
+            {
+                standingStill = true;
             }
         }
 
@@ -209,63 +229,6 @@ namespace Plattformer
                 sourceRect.X = 240;
                 sourceRect.Y = 360;
             }
-        }
-
-        private void KeyInput(TileGrid grid)
-        {
-            //Input
-            if (KeyMouseReader.KeyPressed(Keys.Left) && KeyMouseReader.oldKeyState != KeyMouseReader.keyState)
-            {
-                if (grid.Check(myPoint.X - 1, myPoint.Y) != 1)
-                {
-                    standingStill = false;
-                    newPos = new Vector2(drawPos.X - 40, drawPos.Y);
-
-                    currentDir = Direction.left;
-                    playerFx = SpriteEffects.FlipHorizontally;
-                }
-            }
-
-            else if (KeyMouseReader.KeyPressed(Keys.Right) && KeyMouseReader.oldKeyState != KeyMouseReader.keyState)
-            {
-                if (grid.Check(myPoint.X + 1, myPoint.Y) != 1)
-                {
-                    standingStill = false;
-                    newPos = new Vector2(drawPos.X + 40, drawPos.Y);
-
-                    currentDir = Direction.right;
-                    playerFx = SpriteEffects.None;
-                }
-            }
-
-            else if (KeyMouseReader.KeyPressed(Keys.Up) && KeyMouseReader.oldKeyState != KeyMouseReader.keyState)
-            {
-                if (grid.Check(myPoint.X, myPoint.Y - 1) != 1)
-                {
-                    standingStill = false;
-                    newPos = new Vector2(drawPos.X, drawPos.Y - 40);
-
-                
-                    currentDir = Direction.up;
-                }
-            }
-
-            else if (KeyMouseReader.KeyPressed(Keys.Down) && KeyMouseReader.oldKeyState != KeyMouseReader.keyState)
-            {
-                if (grid.Check(myPoint.X, myPoint.Y + 1) != 1)
-                {
-                    standingStill = false;
-                    newPos = new Vector2(drawPos.X, drawPos.Y + 40);
-
-                    currentDir = Direction.down;
-
-                }
-            }
-
-            else
-            {
-                standingStill = true;
-          }
         }
 
         public void Fall()
