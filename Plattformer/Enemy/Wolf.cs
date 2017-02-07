@@ -31,7 +31,7 @@ namespace Plattformer
         Queue<Vector2> waypoints = new Queue<Vector2>();
         Point startPoint, endPoint, previous;
         Pathfinder pathfinder;
-        Point pr, p1, p2;
+        Point pr, p1;
         Random random;
 
         int x, y;
@@ -41,12 +41,9 @@ namespace Plattformer
         double energy, energyTimer, energyTimerReset;
 
         float speed;
-        float speedS;
         int aggroRange = 200;
         int frame;
         int startHp;
-        bool changeDirection = false;
-        bool test = true;
 
         SpriteEffects wolfFx;
 
@@ -70,7 +67,7 @@ namespace Plattformer
             energyTimerReset = 5000;
 
             speed = 0f;
-            energy = 30;
+            energy = 10;
 
             x = 0;
             y = 0;
@@ -81,104 +78,7 @@ namespace Plattformer
 
         public void Update(GameTime gameTime, Point target, Point sleepPoint, TileGrid grid)
         {
-
-            test = false;
-
-
-            switch (currentMovement)
-            {
-
-                case Movement.attack:
-                    if (grid.CheckWalkable(target.X, target.Y) == 0 && searchTimer < 0)
-                    {
-                        FindPath(target, grid);
-                        searchTimer = searchTimerReset;
-
-                    }
-
-                    else if (FoundPlayer(target) == 2)
-                    {
-                        currentMovement = Movement.patrol;
-                    }
-                    else if (energy < 0 && FoundPlayer(target) != 1)
-                    {
-                        FindPath(sleepPoint, grid);
-                        currentMovement = Movement.sleep;
-                    }
-                    searchTimer -= gameTime.ElapsedGameTime.TotalMilliseconds;
-                    speed = 60f;
-                    if (waypoints.Count() != 0 && waypoints != null)
-                    {
-                        UpdatePosition(waypoints.Peek(), (float)gameTime.ElapsedGameTime.TotalSeconds);
-                    } 
-                    position += (velocity + accelaration) / 2;
-
-                    break;
-
-                case Movement.patrol:
-
-                    if (patrolTimer < 0)
-                    {
-                        SetPatroll(p1, grid);
-                        FindPath(p1, grid);
-                    }
-
-                    if (energy <= 0 && FoundPlayer(target) != 1)
-                    {
-                        FindPath(sleepPoint, grid);
-                        currentMovement = Movement.sleep;
-                    }
-
-                    else if (FoundPlayer(target) == 1)
-                    {
-                        waypoints.Clear();
-                        currentMovement = Movement.attack;
-                    }
-                    patrolTimer -= gameTime.ElapsedGameTime.TotalMilliseconds;
-                    speed = 40f;
-                    if (waypoints.Count() != 0 && waypoints != null)
-                    {
-                        UpdatePosition(waypoints.Peek(), (float)gameTime.ElapsedGameTime.TotalSeconds);
-                    }
-                    position += (velocity + accelaration) / 2;
-
-                    break;
-
-                case Movement.sleep:
-
-                    if (FoundPlayer(target) == 1)
-                    {
-                        energy = 0;
-                        energyTimer = energyTimerReset;
-                        currentMovement = Movement.attack;
-                    }
-
-                    if (waypoints.Count() == 0)
-                    {
-                        energyTimer -= gameTime.ElapsedGameTime.TotalMilliseconds;
-                        if (energyTimer < 0)
-                        {
-                            energy = 30;
-                            energyTimer = energyTimerReset;
-                            currentMovement = Movement.patrol;
-                        }
-                    }
-                    speed = 40f;
-                    if(waypoints.Count() != 0 && waypoints != null)
-                    {
-                        UpdatePosition(waypoints.Peek(), (float)gameTime.ElapsedGameTime.TotalSeconds);
-                    }
-                   // UpdatePos();
-                    position += (velocity + accelaration) / 2;
-
-
-                    break;
-
-                case Movement.flee:
-
-                    break;
-            }
-
+            NewMethod(gameTime, target, sleepPoint, grid);
 
         }
 
@@ -208,6 +108,98 @@ namespace Plattformer
             get { return new Vector2(position.X, position.Y); }
         }
 
+        private void NewMethod(GameTime gameTime, Point target, Point sleepPoint, TileGrid grid)
+        {
+            switch (currentMovement)
+            {
+
+                case Movement.attack:
+                    if (grid.CheckWalkable(target.X, target.Y) == 0 && searchTimer < 0)
+                    {
+                        FindPath(target, grid);
+                        searchTimer = searchTimerReset;
+                    }
+
+                    else if (FoundPlayer(target) == 2)
+                    {
+                        currentMovement = Movement.patrol;
+                    }
+                    else if (energy < 0 && FoundPlayer(target) != 1)
+                    {
+                        FindPath(sleepPoint, grid);
+                        currentMovement = Movement.sleep;
+                    }
+                    searchTimer -= gameTime.ElapsedGameTime.TotalMilliseconds;
+                    speed = 80f;
+                    if (waypoints.Count() != 0 && waypoints != null)
+                    {
+                        UpdatePosition(waypoints.Peek(), (float)gameTime.ElapsedGameTime.TotalSeconds);
+                    }
+
+                    break;
+
+                case Movement.patrol:
+
+                    if (patrolTimer < 0)
+                    {
+                        SetPatroll(p1, grid);
+                        FindPath(p1, grid);
+                    }
+
+                    if (energy <= 0 && FoundPlayer(target) != 1)
+                    {
+                        waypoints.Clear();
+                        FindPath(sleepPoint, grid);
+                        currentMovement = Movement.sleep;
+                    }
+
+                    else if (FoundPlayer(target) == 1)
+                    {
+                        waypoints.Clear();
+                        currentMovement = Movement.attack;
+                    }
+                    patrolTimer -= gameTime.ElapsedGameTime.TotalMilliseconds;
+                    speed = 40f;
+                    if (waypoints.Count() != 0 && waypoints != null)
+                    {
+                        UpdatePosition(waypoints.Peek(), (float)gameTime.ElapsedGameTime.TotalSeconds);
+                    }
+                    break;
+
+                case Movement.sleep:
+
+                    if (FoundPlayer(target) == 1)
+                    {
+                        energy = 0;
+                        energyTimer = energyTimerReset;
+                        currentMovement = Movement.attack;
+                    }
+
+                    if (waypoints.Count() == 0)
+                    {
+                        energyTimer -= gameTime.ElapsedGameTime.TotalMilliseconds;
+                        if (energyTimer < 0)
+                        {
+                            energy = 30;
+                            energyTimer = energyTimerReset;
+                            currentMovement = Movement.patrol;
+                        }
+                    }
+                    speed = 40f;
+                    if (waypoints.Count() != 0 && waypoints != null)
+                    {
+                        UpdatePosition(waypoints.Peek(), (float)gameTime.ElapsedGameTime.TotalSeconds);
+                    }
+
+
+                    break;
+
+                case Movement.flee:
+
+                    break;
+            }
+        }
+
         public Point myGridPoint
         {
             get { return new Point((int)position.X / 40, (int)position.Y / 40); }
@@ -227,7 +219,6 @@ namespace Plattformer
             return p1 = new Point(x, y);
         }
 
-
         float DistanceToWaypoint
         {
             get { return Vector2.Distance(new Vector2(position.X, position.Y), new Vector2(waypoints.Peek().X, waypoints.Peek().Y)); }
@@ -237,17 +228,12 @@ namespace Plattformer
         {
             if (waypoints != null)
             {
-                //waypoints.Clear();
                 if (waypoints.Count() == 0 && targetPoint != myGridPoint)
                 {
                     pathfinder = new Pathfinder(grid);
                     waypoints.Clear();
                     startPoint = myGridPoint;
-                    endPoint = targetPoint;
-                    if(grid.CheckWalkable(previous.X, previous.Y) != 0 && previous.X != 0 && previous.Y != 0)
-                    {
-                        Console.WriteLine("fuck");
-                    }
+                    endPoint = targetPoint;                 
                     waypoints = pathfinder.FindPath(startPoint, endPoint, previous);
                 }
 
@@ -285,6 +271,7 @@ namespace Plattformer
         {
             if(position == goal)
             {
+                waypoints.Dequeue();
                 return true;
             }
             Vector2 direction = Vector2.Normalize(goal - position);
@@ -293,6 +280,7 @@ namespace Plattformer
             {
                 position = goal;
                 waypoints.Dequeue();
+                energy--;
             }
 
 
@@ -321,72 +309,6 @@ namespace Plattformer
             return Vector2.Distance(this.position, range);
         }
 
-
-
     }
 
-
 }
-//public override void HandelCollision(GameObject g, int o)
-//{
-//    //Top
-//    if (o == 1)
-//    {
-//        speed.Y = 0;
-//        drawPos.Y = g.HitBox().Y - HitBox().Height + 1;
-//    }
-
-//    //Left
-//    if (o == 3)
-//    {
-//        drawPos.X = drawPos.X - 1;
-//        changeDirection = true;
-
-//    }
-
-//    //Right
-//    if (o == 4)
-//    {
-//        drawPos.X = drawPos.X + 1;
-//        changeDirection = false;
-//    }
-
-
-//}
-//Animation and Texture switch
-
-//frameTimer -= gameTime.ElapsedGameTime.TotalMilliseconds;
-//if (frameTimer <= 0)
-//{
-//    frameTimer = frameInterval;
-//    sourceRect.X = (frame % 5) * 95;
-//}
-
-//if (changeDirection == false)
-//{
-//    currentMovement = Movement.walkRight;
-//    wolfFx = SpriteEffects.None;
-//}
-
-//if (changeDirection == true)
-//{
-//    currentMovement = Movement.walkLeft;
-//    wolfFx = SpriteEffects.FlipHorizontally;
-//}
-
-//drawPos += speed;
-//switch (currentMovement)
-//{
-
-
-//    case Movement.walkRight:
-//        speed.X = 1;
-//        frame++;
-//        break;
-
-//    case Movement.walkLeft:
-//        speed.X = -1;
-//        frame++;
-//        break;
-//}
-

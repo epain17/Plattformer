@@ -127,51 +127,12 @@ namespace Plattformer
                         tiles.Add(blockTile);
                         counter++;
                     }
-
-                    //Greenblock
-                    if (strings[i][j] == 's')
-                    {
-                        dec = new Decoration(blockTex2, j * 40, i * 40);
-                        gameObjects.Add(dec);
-                    }
-
-                    //Crackedblock
-                    if (strings[i][j] == 'r')
-                    {
-                        dec = new Decoration(blockTex3, j * 40, i * 40);
-                        gameObjects.Add(dec);
-                    }
-
-                    //Killblock
-                    if (strings[i][j] == 'v')
-                    {
-                        spike = new Spike(blockTex3, j * 40, i * 40);
-                        gameObjects.Add(spike);
-                    }
-
-                    //Spike
-                    if (strings[i][j] == 'w')
-                    {
-                        spike = new Spike(spikeTex, j * 40, i * 40);
-                        gameObjects.Add(spike);
-                    }
+            
                     //Wolf
                     if (strings[i][j] == 'e')
                     {
                         wolf = new Wolf(wolfTex, blockTex, j * 40, i * 40);
-                    }
-                    //Bonfire
-                    if (strings[i][j] == 'f')
-                    {
-                        bon = new Bonfire(bonTex, j * 40, i * 40);
-                        gameObjects.Add(bon);
-                    }
-                    //Teleport
-                    if (strings[i][j] == 't')
-                    {
-                        teleport = new Teleport(bonTex, j * 40, i * 40);
-                        gameObjects.Add(teleport);
-                    }              
+                    }                      
                 }
                 
                 if (counter > blockCounter)
@@ -195,39 +156,6 @@ namespace Plattformer
            
             //Update Background
             backGround.Update();
-
-            //Collision Blocks            
-            //foreach (GameObject g in gameObjects)
-            //{
-            //    g.Update(gameTime);
-            //    if (g is Block)
-            //    {
-            //        int n = player.Collision(g);
-            //        if (n > 0)
-            //        {
-            //            player.HandelCollision(g, n);
-            //        }
-
-            //    }
-            //    //Spike Collision
-            //    if (g is Spike)
-            //    {
-            //        if (player.PixelCollision(g as Spike))
-            //        {
-            //            player.SpikeHit();
-            //        }
-            //    }
-
-            //    //Teleport Collision
-            //    if (g is Teleport)
-            //    {
-            //        if (player.HitBox().Intersects(g.HitBox()))
-            //        {
-            //            player.Teleport();
-            //        }
-            //    }
-
-            //}
             player.Update(gameTime, tilegrid);
             wolf.Update(gameTime, player.myPosition, new Point(3, 10), tilegrid);
 
