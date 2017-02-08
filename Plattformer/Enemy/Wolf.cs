@@ -23,18 +23,19 @@ namespace Plattformer
 
         Vector2 accelaration;
         Vector2 position;
-        Vector2 velocity;
-
+        Vector2 direction;
         Rectangle sourceRect;
         Texture2D tex, tex2;
 
         Queue<Vector2> waypoints = new Queue<Vector2>();
+        Queue<Vector2> sight = new Queue<Vector2>();
         Point startPoint, endPoint, previous;
         Pathfinder pathfinder;
         Point pr, p1;
         Random random;
 
         int x, y;
+        int max = 18;
 
         double searchTimer, searchTimerReset;
         double patrolTimer, patrolTimerReset;
@@ -241,32 +242,6 @@ namespace Plattformer
 
         }
 
-        protected virtual void UpdatePos()
-        {
-            if (waypoints != null)
-            {
-                if (waypoints.Count > 0)
-                {
-                    if (DistanceToWaypoint < 2f)
-                    {
-                        position = waypoints.Peek();
-                        previous = new Point(((int)waypoints.Peek().X) / 40, ((int)waypoints.Peek().Y) / 40);
-                        waypoints.Dequeue();
-                        if (energy > 0)
-                            --energy;
-                    }
-                    else
-                    {
-                        Vector2 direction = waypoints.Peek() - position;
-                        direction.Normalize();
-                        velocity = Vector2.Multiply(direction, speed);
-                    }
-                }
-                else
-                    velocity = Vector2.Zero;
-            }
-        }
-
         private bool UpdatePosition(Vector2 goal, float elapsed)
         {
             if(position == goal)
@@ -274,7 +249,8 @@ namespace Plattformer
                 waypoints.Dequeue();
                 return true;
             }
-            Vector2 direction = Vector2.Normalize(goal - position);
+            direction = Vector2.Normalize(goal - position);
+            Console.WriteLine(Direction());
             position += direction * speed * elapsed;
             if (Math.Abs(Vector2.Dot(direction, Vector2.Normalize(goal - position)) + 1) < 0.1f)
             {
@@ -307,6 +283,45 @@ namespace Plattformer
         {
             Vector2 range = new Vector2(point.X * 40, point.Y * 40);
             return Vector2.Distance(this.position, range);
+        }
+
+        private int Direction()
+        {
+            if (direction.X == 1 && direction.Y == 0)
+            {
+                return 1;
+            }
+            else if (direction.X == -1 && direction.Y == 0)
+            {
+                return 2;
+            }
+            else if (direction.X == 0 && direction.Y == 1)
+            {
+                return 3; 
+            }
+
+            return 0;
+        }
+
+        private bool inSigth(int direction)
+        {
+            if(Direction() == 0)
+            {
+                for (int i = 0; i < max; i++)
+                {
+
+                }
+
+            }
+            else if(Direction() == 1)
+            {
+
+            }
+            else if(Direction() == 2)
+            {
+
+            }
+            
         }
 
     }
