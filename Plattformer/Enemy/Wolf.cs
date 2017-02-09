@@ -21,9 +21,7 @@ namespace Plattformer
         }
         Movement currentMovement = Movement.patrol;
 
-        Vector2 accelaration;
         Vector2 position;
-        Vector2 velocity;
 
         Rectangle sourceRect;
         Texture2D tex, tex2;
@@ -42,10 +40,8 @@ namespace Plattformer
 
         float speed;
         int aggroRange = 200;
-        int frame;
-        int startHp;
+        
 
-        SpriteEffects wolfFx;
 
         public Wolf(Texture2D tex, Texture2D tex2, int x, int y)
         {
@@ -54,8 +50,6 @@ namespace Plattformer
 
             sourceRect = new Rectangle(0, 50, 96, 37);
             position = new Vector2(x, y);
-            accelaration = Vector2.Zero;
-            wolfFx = SpriteEffects.None;
 
             searchTimer = 200;
             searchTimerReset = 200;
@@ -78,7 +72,7 @@ namespace Plattformer
 
         public void Update(GameTime gameTime, Point target, Point sleepPoint, TileGrid grid)
         {
-            NewMethod(gameTime, target, sleepPoint, grid);
+            StateSwitch(gameTime, target, sleepPoint, grid);
 
         }
 
@@ -98,6 +92,8 @@ namespace Plattformer
 
         }
 
+
+
         public Rectangle HitBox()
         {
             return new Rectangle((int)position.X, (int)position.Y, 60, 40);
@@ -108,13 +104,13 @@ namespace Plattformer
             get { return new Vector2(position.X, position.Y); }
         }
 
-        private void NewMethod(GameTime gameTime, Point target, Point sleepPoint, TileGrid grid)
+        private void StateSwitch(GameTime gameTime, Point target, Point sleepPoint, TileGrid grid)
         {
             switch (currentMovement)
             {
 
                 case Movement.attack:
-                    if (grid.CheckWalkable(target.X, target.Y) == 0 && searchTimer < 0)
+                    if (FoundPlayer(target) == 1 && searchTimer < 0)
                     {
                         FindPath(target, grid);
                         searchTimer = searchTimerReset;
@@ -142,13 +138,14 @@ namespace Plattformer
 
                     if (patrolTimer < 0)
                     {
+                        //.Clear();
                         SetPatroll(p1, grid);
                         FindPath(p1, grid);
                     }
 
                     if (energy <= 0 && FoundPlayer(target) != 1)
                     {
-                        waypoints.Clear();
+                        //waypoints.Clear();
                         FindPath(sleepPoint, grid);
                         currentMovement = Movement.sleep;
                     }
@@ -241,35 +238,9 @@ namespace Plattformer
 
         }
 
-        protected virtual void UpdatePos()
-        {
-            if (waypoints != null)
-            {
-                if (waypoints.Count > 0)
-                {
-                    if (DistanceToWaypoint < 2f)
-                    {
-                        position = waypoints.Peek();
-                        previous = new Point(((int)waypoints.Peek().X) / 40, ((int)waypoints.Peek().Y) / 40);
-                        waypoints.Dequeue();
-                        if (energy > 0)
-                            --energy;
-                    }
-                    else
-                    {
-                        Vector2 direction = waypoints.Peek() - position;
-                        direction.Normalize();
-                        velocity = Vector2.Multiply(direction, speed);
-                    }
-                }
-                else
-                    velocity = Vector2.Zero;
-            }
-        }
-
         private bool UpdatePosition(Vector2 goal, float elapsed)
         {
-            if(position == goal)
+            if (position == goal)
             {
                 waypoints.Dequeue();
                 return true;

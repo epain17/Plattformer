@@ -38,26 +38,29 @@
     <ApplicationIcon>Icon.ico</ApplicationIcon>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="Enemy\TileGrid.cs" />
-    <Compile Include="TextureManager.cs" />
+    <Compile Include="Enemy\BaseEnemy.cs" />
+    <Compile Include="Enemy\FSMenemy.cs" />
+    <Compile Include="FSMs\Fusm.cs" />
+    <Compile Include="Grid\TileGrid.cs" />
+    <Compile Include="Mangers\TextureManager.cs" />
     <Compile Include="Övrigt\BackGround.cs" />
     <Compile Include="GameObjects\Block.cs" />
     <Compile Include="GameObjects\Bonfire.cs" />
     <Compile Include="Player\Camera.cs" />
     <Compile Include="GameObjects\Decoration.cs" />
     <Compile Include="Game1.cs" />
-    <Compile Include="GameManager.cs" />
+    <Compile Include="Mangers\GameManager.cs" />
     <Compile Include="GameObjects\GameObject.cs" />
     <Compile Include="Övrigt\KeyMouseReader.cs" />
     <Compile Include="Övrigt\Pathfinder.cs" />
     <Compile Include="Player\Player.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Enemy\SearchGrid.cs" />
     <Compile Include="GameObjects\Spike.cs" />
     <Compile Include="GameObjects\Teleport.cs" />
-    <Compile Include="Enemy\Tile.cs" />
+    <Compile Include="Grid\Tile.cs" />
     <Compile Include="Enemy\Wolf.cs" />
+    <Compile Include="Övrigt\VectorMath.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="MonoGame.Framework">
