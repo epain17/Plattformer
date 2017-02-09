@@ -38,7 +38,10 @@
     <ApplicationIcon>Icon.ico</ApplicationIcon>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="BaseEnemy.cs" />
     <Compile Include="Enemy\TileGrid.cs" />
+    <Compile Include="FSMenemy.cs" />
+    <Compile Include="FuSMenemy.cs" />
     <Compile Include="TextureManager.cs" />
     <Compile Include="Övrigt\BackGround.cs" />
     <Compile Include="GameObjects\Block.cs" />
