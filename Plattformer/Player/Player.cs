@@ -53,7 +53,7 @@ namespace Plattformer
 
         public override void Update(GameTime gameTime, TileGrid grid)
         {
-            Console.WriteLine(myPosition);
+
             Animation(gameTime);
             KeyInput(grid);
 
@@ -119,7 +119,7 @@ namespace Plattformer
         public Point myPosition
         {
             get { return new Point(((int)drawPos.X) / 40, ((int)drawPos.Y) / 40); }
-            //set { myPosition = value; }
+            set { myPosition = value; }
         }
 
         float Distance

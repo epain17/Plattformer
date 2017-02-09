@@ -63,10 +63,6 @@ namespace Plattformer.Enemy
 
         public int Check(int cellX, int cellY)
         {
-            if (cellY == 14)
-            {
-                Console.WriteLine();
-            }
             if (tileGrid[cellX, cellY].iamOccupied == false && tileGrid[cellX, cellY] != null)
             {
                 return 0;

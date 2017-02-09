@@ -23,7 +23,6 @@ namespace Plattformer
         //GameObjects, Background
         Player player;
         Wolf wolf;
-        FSMenemy fsmEnemy;
         BackGround backGround;
         Spike spike;
         Block block;
@@ -132,7 +131,6 @@ namespace Plattformer
                     //Wolf
                     if (strings[i][j] == 'e')
                     {
-                        fsmEnemy = new FSMenemy(blockTex, j * 40, i * 40, new Point(j, i));
                         wolf = new Wolf(wolfTex, blockTex, j * 40, i * 40);
                     }                      
                 }
@@ -160,7 +158,6 @@ namespace Plattformer
             backGround.Update();
             player.Update(gameTime, tilegrid);
             wolf.Update(gameTime, player.myPosition, new Point(3, 10), tilegrid);
-            fsmEnemy.Update(gameTime, tilegrid, player.myPosition);
 
             // Camera Update
             if (player.Pos.X > 0 + gameWindow.ClientBounds.Width / 2 && player.Pos.X < blockCounter * 40)
@@ -200,7 +197,6 @@ namespace Plattformer
             spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, null, null, null, null, camera.Transform);
             tilegrid.Draw(spriteBatch);
             wolf.Draw(spriteBatch);
-            fsmEnemy.Draw(spriteBatch);
             foreach (GameObject g in gameObjects)
             {
                 g.Draw(spriteBatch);
