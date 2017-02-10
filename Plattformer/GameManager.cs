@@ -77,7 +77,7 @@ namespace Plattformer
 
             //Moving Textures
             playerTex = Content.Load<Texture2D>("darkSheet");
-            wolfTex = Content.Load<Texture2D>("wolf1");
+            //wolfTex = Content.Load<Texture2D>("wolf1");
             bonTex = Content.Load<Texture2D>("bonfire");
 
             temptex = Content.Load<Texture2D>("vit");
@@ -155,11 +155,10 @@ namespace Plattformer
 
         public void Update(GameTime gameTime)
         {
-           
             //Update Background
             backGround.Update();
             player.Update(gameTime, tilegrid);
-            wolf.Update(gameTime, player.myPosition, new Point(3, 10), tilegrid);
+            //wolf.Update(gameTime, player.myPosition, new Point(3, 10), tilegrid);
             FsmEnemy.Update(gameTime, tilegrid, player.myPosition);
 
             // Camera Update
@@ -199,7 +198,7 @@ namespace Plattformer
             //Draw Camera and Gameobjects
             spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, null, null, null, null, camera.Transform);
             tilegrid.Draw(spriteBatch);
-            wolf.Draw(spriteBatch);
+            //wolf.Draw(spriteBatch);
             FsmEnemy.Draw(spriteBatch);
             foreach (GameObject g in gameObjects)
             {

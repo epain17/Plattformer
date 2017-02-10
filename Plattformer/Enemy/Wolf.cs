@@ -224,6 +224,32 @@ namespace Plattformer
             get { return Vector2.Distance(new Vector2(position.X, position.Y), new Vector2(waypoints.Peek().X, waypoints.Peek().Y)); }
         }
 
+        public Point Pr
+        {
+            get
+            {
+                return pr;
+            }
+
+            set
+            {
+                pr = value;
+            }
+        }
+
+        public Point P1
+        {
+            get
+            {
+                return p1;
+            }
+
+            set
+            {
+                p1 = value;
+            }
+        }
+
         public void FindPath(Point targetPoint, TileGrid grid)
         {
             if (waypoints != null)
