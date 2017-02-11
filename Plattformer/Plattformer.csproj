@@ -38,18 +38,21 @@
     <ApplicationIcon>Icon.ico</ApplicationIcon>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="BaseEnemy.cs" />
+    <Compile Include="Enemy\BaseEnemy.cs" />
     <Compile Include="Enemy\TileGrid.cs" />
-    <Compile Include="FSMenemy.cs" />
+    <Compile Include="FSM\FSMenemy.cs" />
+    <Compile Include="FStateAttack.cs" />
+    <Compile Include="FuSMControl.cs" />
     <Compile Include="FuSMenemy.cs" />
-    <Compile Include="TextureManager.cs" />
+    <Compile Include="FuSMState.cs" />
+    <Compile Include="Övrigt\TextureManager.cs" />
     <Compile Include="Övrigt\BackGround.cs" />
     <Compile Include="GameObjects\Block.cs" />
     <Compile Include="GameObjects\Bonfire.cs" />
     <Compile Include="Player\Camera.cs" />
     <Compile Include="GameObjects\Decoration.cs" />
-    <Compile Include="Game1.cs" />
-    <Compile Include="GameManager.cs" />
+    <Compile Include="Övrigt\Game1.cs" />
+    <Compile Include="Övrigt\GameManager.cs" />
     <Compile Include="GameObjects\GameObject.cs" />
     <Compile Include="Övrigt\KeyMouseReader.cs" />
     <Compile Include="Övrigt\Pathfinder.cs" />
