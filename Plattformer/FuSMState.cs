@@ -1,4 +1,5 @@
 ﻿using Microsoft.Xna.Framework;
+using Plattformer.Enemy;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,15 +10,20 @@ namespace Plattformer
 {
     class FuSMState
     {
-        public FuSMState()
-        { }
+        protected Point target;
+        protected TileGrid grid;
+        public FuSMState(Point target, TileGrid grid)
+        {
+            this.target = target;
+            this.grid = grid;
+        }
 
-        float activationLevel;
-        protected virtual void Update(GameTime gameTime) { }
-        protected virtual void Enter() { }
-        protected virtual void Exit() { }
-        protected virtual void Init() { }
-        float CalculateActivation()
+        protected float activationLevel;
+        public virtual void Update(GameTime gameTime) { }
+        public virtual void Enter() { }
+        public virtual void Exit() { }
+        public virtual void Init() { }
+        public virtual float CalculateActivation()
         {
             return activationLevel;
         }
@@ -36,7 +42,7 @@ namespace Plattformer
                 activationLevel = ubound;
             }
         }
-        void CheckBounds(float lb = 0.0f, float ub = 1.0f)
+        protected virtual void CheckBounds(float lb = 0.0f, float ub = 1.0f)
         {
             CheckLowerBound(lb);
             CheckHigherBound(ub);

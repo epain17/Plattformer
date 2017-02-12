@@ -78,7 +78,7 @@ namespace Plattformer.Enemy
 
                     if (waypoints.Count() != 0 && waypoints != null)
                     {
-                        UpdatePostion(waypoints.Peek(), (float)gameTime.ElapsedGameTime.TotalSeconds);
+                        UpdatePostion((float)gameTime.ElapsedGameTime.TotalSeconds);
                     }
 
                     searchTimer -= gameTime.ElapsedGameTime.TotalMilliseconds;
@@ -110,7 +110,7 @@ namespace Plattformer.Enemy
                     patrolTimer -= gameTime.ElapsedGameTime.TotalMilliseconds;
                     if (waypoints.Count() != 0 && waypoints != null)
                     {
-                        UpdatePostion(waypoints.Peek(), (float)gameTime.ElapsedGameTime.TotalSeconds);
+                        UpdatePostion((float)gameTime.ElapsedGameTime.TotalSeconds);
                     }
                     speed = 60f;
                     break;
@@ -137,7 +137,7 @@ namespace Plattformer.Enemy
                     speed = 90f;
                     if (waypoints.Count() != 0 && waypoints != null)
                     {
-                        UpdatePostion(waypoints.Peek(), (float)gameTime.ElapsedGameTime.TotalSeconds);
+                        UpdatePostion((float)gameTime.ElapsedGameTime.TotalSeconds);
                     }
 
 
@@ -154,7 +154,7 @@ namespace Plattformer.Enemy
                     }
                     if (waypoints.Count() != 0 && waypoints != null)
                     {
-                        UpdatePostion(waypoints.Peek(), (float)gameTime.ElapsedGameTime.TotalSeconds);
+                        UpdatePostion((float)gameTime.ElapsedGameTime.TotalSeconds);
                     }
 
 
@@ -170,9 +170,6 @@ namespace Plattformer.Enemy
             base.Draw(spriteBatch);
         }
 
-       
-
-        
-
+      
     }
 }

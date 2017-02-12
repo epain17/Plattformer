@@ -24,7 +24,7 @@ namespace Plattformer
         //Pathifinding realterat
         protected Pathfinder pathfinder;
         protected Queue<Vector2> waypoints = new Queue<Vector2>();
-        protected Point startPoint, endPoint, previous;
+        protected Point startPoint, endPoint, previous, target;
         protected Point pr, p1;
         protected Random random;
 
@@ -60,7 +60,7 @@ namespace Plattformer
 
         public virtual void Update(GameTime gameTime, TileGrid grid, Point target)
         {
-
+            this.target = target;
         }
 
         public virtual void Draw(SpriteBatch spriteBatch)
@@ -78,12 +78,22 @@ namespace Plattformer
             get { return position; }
         }
 
-        protected Point myGridPoint
+        public Point myGridPoint
         {
             get { return new Point((int)position.X / 40, (int)position.Y / 40); }
         }
 
-        protected Point SetPatroll(Point patrolPoint, TileGrid tileGrid)
+        public int wayCount
+        {
+            get { return waypoints.Count(); }
+        }
+
+        public Point GetTarget
+        {
+            get { return target; }
+        }
+
+        public Point SetPatroll(Point patrolPoint, TileGrid tileGrid)
         {
             patrolPointX = 0;
             patrolPointY = 0;
@@ -97,6 +107,8 @@ namespace Plattformer
             return p1 = new Point(patrolPointX, patrolPointY);
         }
 
+
+
         protected float DistanceToWayPoint
         {
             get { return Vector2.Distance(new Vector2(position.X, position.Y), new Vector2(waypoints.Peek().X, waypoints.Peek().Y)); }
@@ -104,9 +116,9 @@ namespace Plattformer
         }
 
 
-        protected void FindPath(Point targetPoint, TileGrid tileGrid)
+        public void FindPath(Point targetPoint, TileGrid tileGrid)
         {
-          
+
             if (waypoints != null)
             {
                 if (waypoints.Count() == 0 && targetPoint != myGridPoint)
@@ -120,34 +132,40 @@ namespace Plattformer
             }
         }
 
-        protected bool UpdatePostion(Vector2 goal, float elapsed)
+        public bool UpdatePostion(float elapsed)
         {
-            if (position == goal)
+            //ändrade här med goal
+            Vector2 goal = Vector2.Zero;
+            if (waypoints.Count() != 0)
             {
-                waypoints.Dequeue();
-                return true;
-            }
-            Vector2 direction = Vector2.Normalize(goal - position);
-            position += direction * speed * elapsed;
-            if (Math.Abs(Vector2.Dot(direction, Vector2.Normalize(goal - position)) + 1) < 0.1f)
-            {
-                position = goal;
-                waypoints.Dequeue();
-                energy--;
-               
-            }
+                goal = waypoints.Peek();
+                if (position == goal)
+                {
+                    waypoints.Dequeue();
+                    return true;
+                }
+                Vector2 direction = Vector2.Normalize(goal - position);
+                position += direction * speed * elapsed;
+                if (Math.Abs(Vector2.Dot(direction, Vector2.Normalize(goal - position)) + 1) < 0.1f)
+                {
+                    position = goal;
+                    waypoints.Dequeue();
+                    energy--;
 
+                }
+
+            }
 
             return position == goal;
         }
 
-        protected float Range(Point point)
+        public float Range(Point point)
         {
             Vector2 range = new Vector2(point.X * 40, point.Y * 40);
             return Vector2.Distance(this.position, range);
         }
 
-        protected int FoundPlayer(Point TP)
+        public int FoundPlayer(Point TP)
         {
             if (Range(TP) < aggroRange)
             {
