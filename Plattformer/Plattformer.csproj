@@ -43,6 +43,7 @@
     <Compile Include="Enemy\TileGrid.cs" />
     <Compile Include="FSM\FSMenemy.cs" />
     <Compile Include="FStateAttack.cs" />
+    <Compile Include="FStateAvoid.cs" />
     <Compile Include="FuSM.cs" />
     <Compile Include="FuSMenemy.cs" />
     <Compile Include="FuSMState.cs" />

@@ -13,7 +13,6 @@ namespace Plattformer
         List<FuSMState> states = new List<FuSMState>();
         List<FuSMState> activeStates = new List<FuSMState>();
 
-
         public FuSM(AiFuSMControl control)
         {
 

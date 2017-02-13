@@ -30,7 +30,7 @@ namespace Plattformer
             this.energyTimerReset = 5000;
             this.energy = 30;
 
-            this.aggroRange = 100;
+            this.aggroRange = 300;
             this.speed = 100;
             this.random = new Random();
 
@@ -38,11 +38,7 @@ namespace Plattformer
             this.patrolPointY = 0;
         }
 
-        public float Aggro
-        {
-            get { return aggroRange; }
-        }
-
+        
         public override void Update(GameTime gameTime, TileGrid grid, Point target)
         {
             base.Update(gameTime, grid, target);

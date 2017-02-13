@@ -107,18 +107,14 @@ namespace Plattformer
             return p1 = new Point(patrolPointX, patrolPointY);
         }
 
-
-
         protected float DistanceToWayPoint
         {
             get { return Vector2.Distance(new Vector2(position.X, position.Y), new Vector2(waypoints.Peek().X, waypoints.Peek().Y)); }
 
         }
 
-
         public void FindPath(Point targetPoint, TileGrid tileGrid)
         {
-
             if (waypoints != null)
             {
                 if (waypoints.Count() == 0 && targetPoint != myGridPoint)
@@ -136,7 +132,7 @@ namespace Plattformer
         {
             //ändrade här med goal
             Vector2 goal = Vector2.Zero;
-            if (waypoints.Count() != 0)
+            if (waypoints.Count() != 0 && waypoints != null)
             {
                 goal = waypoints.Peek();
                 if (position == goal)
@@ -238,15 +234,21 @@ namespace Plattformer
             return Math.Abs(point1.X - point2.X) + Math.Abs(point1.Y - point2.Y);
         }
 
-        protected float DistanceTo(Point target, Point currentPoint)
+        public float DistanceTo(Point target, Point currentPoint)
         {
             return Vector2.Distance(new Vector2(target.X, target.Y), new Vector2(currentPoint.X, currentPoint.Y));
         }
 
-        protected float Speed
+        public virtual float Speed
         {
+            get { return speed; }
             set { speed = value; }
         }
 
+        public virtual int Aggro
+        {
+            get { return aggroRange; }
+            set { aggroRange = value; }
+        }
     }
 }

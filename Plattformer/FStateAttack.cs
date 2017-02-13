@@ -28,8 +28,7 @@ namespace Plattformer
 
         public override void Update(GameTime gameTime)
         {
-            Console.WriteLine(enemy.GetTarget);
-            if (enemy.FoundPlayer(target) == 1)
+            if (enemy.FoundPlayer(target) == 1 )
             {
                 enemy.FindPath(target, grid);
             }
@@ -44,9 +43,10 @@ namespace Plattformer
             {
                 activationLevel = 0.0f;
             }
-            else if(enemy.FoundPlayer(target) == 1)
+            else if(enemy.FoundPlayer(target) == 1 && KeyMouseReader.KeyPressed(Microsoft.Xna.Framework.Input.Keys.A))
             {
                 activationLevel = 2.0f;
+                enemy.Speed = 120;
             }
             CheckBounds();
             return base.CalculateActivation();

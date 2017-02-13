@@ -13,16 +13,17 @@ namespace Plattformer
         FuSMenemy enemy;
         private FuSM fuzzy;
         FStateAttack attack;
+        FStateAvoid avoid;
         Point target;
         TileGrid grid;
 
         public AiFuSMControl(FuSMenemy enemy, Point target, TileGrid grid)
         {
-            this.enemy = enemy;
-            
+            this.enemy = enemy;     
             this.target = target;
             this.grid = grid;
             attack = new FStateAttack(enemy, target, grid);
+            avoid = new FStateAvoid(enemy, target, grid);
             AddStates();
         }
 
@@ -30,6 +31,7 @@ namespace Plattformer
         {
             fuzzy = new FuSM(this);
             fuzzy.AddState(attack);
+            fuzzy.AddState(avoid);
             fuzzy.Reset();
         }
 
