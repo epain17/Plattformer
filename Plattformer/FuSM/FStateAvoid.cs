@@ -46,15 +46,16 @@ namespace Plattformer
         {
             target = enemy.GetTarget;
             SetSpeed(target);
-            if (enemy.Speed <= 30)
+            if (enemy.PlayerHP < 5)
             {
                 activationLevel = 0.0f;
 
             }
-            else if(enemy.Speed > 30 && KeyMouseReader.KeyPressed(Microsoft.Xna.Framework.Input.Keys.B))
+            else if (enemy.PlayerHP > 5)
             {
                 activationLevel = 2.0f;
             }
+
             CheckBounds();
             return base.CalculateActivation();
         }

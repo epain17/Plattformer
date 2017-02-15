@@ -18,6 +18,7 @@ namespace Plattformer
         protected Texture2D texture;
         protected int aggroRange;
         protected int energy;
+        protected int playerHP;
         protected float speed;
 
 
@@ -55,11 +56,13 @@ namespace Plattformer
 
             patrolPointX = 0;
             patrolPointY = 0;
+            playerHP = 0;
 
         }
 
-        public virtual void Update(GameTime gameTime, TileGrid grid, Point target)
+        public virtual void Update(GameTime gameTime, TileGrid grid, Point target, int playerHP)
         {
+            this.playerHP = playerHP;
             this.target = target;
         }
 
@@ -249,6 +252,11 @@ namespace Plattformer
         {
             get { return aggroRange; }
             set { aggroRange = value; }
+        }
+
+        public int PlayerHP
+        {
+            get { return playerHP; }
         }
     }
 }

@@ -39,15 +39,21 @@ namespace Plattformer
         public override float CalculateActivation()
         {
             target = enemy.GetTarget;
-            if(enemy.FoundPlayer(target) == 2)
+            if(enemy.FoundPlayer(target) == 2 && enemy.PlayerHP > 5)
             {
                 activationLevel = 0.0f;
             }
-            else if(enemy.FoundPlayer(target) == 1 && KeyMouseReader.KeyPressed(Microsoft.Xna.Framework.Input.Keys.A))
+            else if(enemy.FoundPlayer(target) == 1 && enemy.PlayerHP <=5)
             {
                 activationLevel = 2.0f;
                 enemy.Speed = 120;
             }
+            else if(enemy.FoundPlayer(target) == 1 && enemy.PlayerHP > 5)
+            {
+                activationLevel = 0.0f;
+
+            }
+
             CheckBounds();
             return base.CalculateActivation();
         }

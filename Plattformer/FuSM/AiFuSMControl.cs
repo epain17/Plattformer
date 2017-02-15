@@ -16,12 +16,14 @@ namespace Plattformer
         FStateAvoid avoid;
         Point target;
         TileGrid grid;
+        int playerHP;
 
-        public AiFuSMControl(FuSMenemy enemy, Point target, TileGrid grid)
+        public AiFuSMControl(FuSMenemy enemy, Point target, TileGrid grid, int playerHP)
         {
             this.enemy = enemy;     
             this.target = target;
             this.grid = grid;
+            this.playerHP = playerHP;
             attack = new FStateAttack(enemy, target, grid);
             avoid = new FStateAvoid(enemy, target, grid);
             AddStates();
@@ -35,9 +37,9 @@ namespace Plattformer
             fuzzy.Reset();
         }
 
-        public void Update(GameTime gameTime, Point target, TileGrid grid)
+        public void Update(GameTime gameTime, Point target, TileGrid grid, int playerHP)
         {
-            enemy.Update(gameTime, grid, target);
+            enemy.Update(gameTime, grid, target, playerHP);
             fuzzy.UpdateMachine(gameTime);
         }
 

@@ -39,9 +39,9 @@ namespace Plattformer
         }
 
         
-        public override void Update(GameTime gameTime, TileGrid grid, Point target)
+        public override void Update(GameTime gameTime, TileGrid grid, Point target, int playerHP)
         {
-            base.Update(gameTime, grid, target);
+            base.Update(gameTime, grid, target, playerHP);
         }
 
         public override void Draw(SpriteBatch spriteBatch)

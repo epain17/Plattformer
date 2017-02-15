@@ -89,7 +89,7 @@ namespace Plattformer
             LoadLevel();
             tilegrid = new TileGrid(temptex, 0, 0, 40, 20, 13);
             SetGrid(tilegrid);
-            controller = new AiFuSMControl(fuSMEnemy, player.myPoint, tilegrid);
+            controller = new AiFuSMControl(fuSMEnemy, player.myPoint, tilegrid, player.HP());
 
             pathfinder = new Pathfinder(tilegrid);
             backGround = new BackGround(Content, gameWindow);
@@ -162,7 +162,7 @@ namespace Plattformer
             //Update Background
             backGround.Update();
             player.Update(gameTime, tilegrid);
-            controller.Update(gameTime, player.myPoint, tilegrid);
+            controller.Update(gameTime, player.myPoint, tilegrid, player.HP());
             //wolf.Update(gameTime, player.myPosition, new Point(3, 10), tilegrid);
             //FsmEnemy.Update(gameTime, tilegrid, player.myPosition);
 
