@@ -11,8 +11,6 @@ namespace Plattformer
     class FStateAvoid : FuSMState
     {
         FuSMenemy enemy;
-        Point target;
-        TileGrid grid;
 
         public FStateAvoid(FuSMenemy enemy, Point target, TileGrid grid) : base(target, grid)
         {
@@ -38,21 +36,26 @@ namespace Plattformer
                 enemy.FindPath(flee, grid);
                 enemy.UpdatePostion((float)gameTime.ElapsedGameTime.TotalSeconds);
             }
-
+            Console.WriteLine("avoid");
             base.Update(gameTime);
         }
 
         public override float CalculateActivation()
         {
             target = enemy.GetTarget;
-            if (enemy.PlayerHP < 5)
+
+            if (enemy.GetHP > 3 && enemy.DistanceTo(target, enemy.myGridPoint) > 3)
+            {
+                activationLevel = 0.0f;
+            }
+            else if (enemy.GetHP < 3 && enemy.DistanceTo(target, enemy.myGridPoint) < 3)
+            {
+                activationLevel = 2.0f;
+            }
+            else if (enemy.DistanceTo(target, enemy.myGridPoint) > 3)
             {
                 activationLevel = 0.0f;
 
-            }
-            else if (enemy.PlayerHP > 5 && enemy.DistanceTo(target, enemy.myGridPoint) < 3)
-            {
-                activationLevel = 2.0f;
             }
 
             CheckBounds();
@@ -64,28 +67,13 @@ namespace Plattformer
             target = enemy.GetTarget;
             if (enemy.DistanceTo(target, enemy.myGridPoint) < 1)
             {
-                enemy.Speed = 50;
+                enemy.Speed = 0;
             }
             else
             {
                 enemy.Speed = 180 / enemy.DistanceTo(target, enemy.myGridPoint);
 
             }
-            //if (enemy.DistanceTo(target, enemy.myGridPoint) <= 12 && enemy.DistanceTo(target, enemy.myGridPoint) >= 10)
-            //{
-            //    enemy.Speed = 60;
-            //}
-
-            //else if (enemy.DistanceTo(target, enemy.myGridPoint) <= 10 && enemy.DistanceTo(target, enemy.myGridPoint) >= 5)
-            //{
-            //    enemy.Speed = 100;
-            //}
-
-            //else if(enemy.DistanceTo(target, enemy.myGridPoint) <= 5 && enemy.DistanceTo(target, enemy.myGridPoint) >= 0)
-            //{
-            //    enemy.Speed = 140;
-            //}
-
 
         }
 

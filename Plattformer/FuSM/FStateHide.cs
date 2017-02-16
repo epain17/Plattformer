@@ -11,8 +11,7 @@ namespace Plattformer
     class FStateHide : FuSMState
     {
         FuSMenemy enemy;
-        Point target, hide, currentHide;
-        TileGrid grid;
+        Point hide;
 
         public FStateHide(FuSMenemy enemy, Point target, TileGrid grid) : base(target, grid)
         {
@@ -24,42 +23,56 @@ namespace Plattformer
         public override void Init()
         {
             activationLevel = 0.0f;
-            hide = grid.FindEscapePoint(target);
             enemy.Speed = 160;
+            hide = grid.FindEscapePoint(target);
+
 
             base.Init();
         }
 
+        public override void Exit()
+        {
+            hide = grid.FindEscapePoint(target);
+
+            base.Exit();
+        }
+
         public override void Update(GameTime gameTime)
         {
-            if (enemy.myGridPoint != hide && enemy.DistanceTo(target, enemy.myGridPoint)  > 2)
+
+            if (enemy.myGridPoint != hide)
             {
-                enemy.Speed = 160;
                 enemy.FindPath(hide, grid);
+                enemy.Speed = 160;
                 enemy.UpdatePostion((float)gameTime.ElapsedGameTime.TotalSeconds);
             }
-            else if(enemy.myGridPoint == hide && enemy.DistanceTo(target, enemy.myGridPoint) < 2)
+            else if (enemy.myGridPoint == hide)
             {
                 enemy.Speed = 0;
-                hide = grid.FindEscapePoint(target);
             }
-
-
-
-                base.Update(gameTime);
+            Console.WriteLine("hide" + hide);
+            base.Update(gameTime);
         }
 
         public override float CalculateActivation()
         {
-            if(enemy.myGridPoint != hide && enemy.DistanceTo(target, enemy.myGridPoint) > 5)
+            target = enemy.GetTarget;
+
+            if (enemy.GetHP > 3 && enemy.DistanceTo(target, enemy.myGridPoint) < 3 && enemy.myGridPoint == hide)
+            {
+                activationLevel = 0;
+            }
+
+            else if (enemy.GetHP < 3 && enemy.DistanceTo(target, enemy.myGridPoint) > 3)
             {
                 activationLevel = 2f;
             }
 
-            else if(enemy.myGridPoint == hide)
+            else if(enemy.DistanceTo(target, enemy.myGridPoint) < 3)
             {
                 activationLevel = 0;
             }
+
             CheckBounds();
             return base.CalculateActivation();
         }

@@ -27,7 +27,6 @@ namespace Plattformer
 
         //Player related Bools
         public bool alive = true;
-        bool changedHP = false;
         public bool standingStill = true;
         public bool run = false;
 
@@ -35,7 +34,6 @@ namespace Plattformer
         Vector2 velocity;
         Vector2 newPos;
         float speed = 100.0f;
-        int hp = 10;
 
         //Player Textures and Animation        
         SpriteEffects playerFx;
@@ -57,8 +55,6 @@ namespace Plattformer
         {
 
             Animation(gameTime);
-            HP();
-            Console.WriteLine(hp);
             KeyInput(grid);
 
             switch (currentDir)
@@ -120,21 +116,7 @@ namespace Plattformer
             return new Rectangle((int)drawPos.X + 10, (int)drawPos.Y, 20, 40);
         }
 
-        public int HP()
-        {
-            if(KeyMouseReader.KeyPressed(Keys.O) && KeyMouseReader.oldKeyState.IsKeyUp(Keys.O))
-            {
-                return hp--;
-            }
-
-            else if(KeyMouseReader.KeyPressed(Keys.P) && KeyMouseReader.oldKeyState.IsKeyUp(Keys.P))
-            {
-
-                return hp++;
-            }
-
-            return hp;
-        }
+       
 
         public Point myPosition
         {

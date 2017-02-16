@@ -30,18 +30,21 @@ namespace Plattformer
             this.energyTimerReset = 5000;
             this.energy = 30;
 
-            this.aggroRange = 300;
+            this.aggroRange = 400;
             this.speed = 100;
             this.random = new Random();
 
             this.patrolPointX = 0;
             this.patrolPointY = 0;
+            this.enemyHP = 10;
         }
 
         
-        public override void Update(GameTime gameTime, TileGrid grid, Point target, int playerHP)
+        public override void Update(GameTime gameTime, TileGrid grid, Point target)
         {
-            base.Update(gameTime, grid, target, playerHP);
+            Console.WriteLine("Hp" + enemyHP);
+            HP();
+            base.Update(gameTime, grid, target);
         }
 
         public override void Draw(SpriteBatch spriteBatch)

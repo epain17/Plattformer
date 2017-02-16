@@ -11,8 +11,6 @@ namespace Plattformer
     class FStateAttack : FuSMState
     {
         FuSMenemy enemy;
-        Point target;
-        TileGrid grid;
         public FStateAttack(FuSMenemy enemy, Point target, TileGrid grid) : base(target, grid)
         {
             this.enemy = enemy;
@@ -28,44 +26,38 @@ namespace Plattformer
 
         public override void Update(GameTime gameTime)
         {
-            if (enemy.FoundPlayer(target) == 1 )
+            if (enemy.FoundPlayer(target) == 1)
             {
                 enemy.FindPath(target, grid);
             }
+            enemy.Speed = 140;
             enemy.UpdatePostion((float)gameTime.ElapsedGameTime.TotalSeconds);
+            Console.WriteLine("attack");
             base.Update(gameTime);
         }
 
         public override float CalculateActivation()
         {
             target = enemy.GetTarget;
-            if(enemy.FoundPlayer(target) == 2 && enemy.PlayerHP > 5)
+            if (enemy.FoundPlayer(target) == 2 && enemy.GetHP < 3)
             {
                 activationLevel = 0.0f;
             }
 
-            else if(enemy.FoundPlayer(target) == 1 && enemy.PlayerHP <=5)
-            {
-                activationLevel = 2.0f;
-                enemy.Speed = 120;
-            }
-
-            else if (enemy.FoundPlayer(target) == 1 && enemy.PlayerHP <= 3)
-            {
-                activationLevel = 2.0f;
-                enemy.Speed = 140;
-            }
-
-            else if(enemy.FoundPlayer(target) == 1 && enemy.PlayerHP > 5)
+            else if(enemy.FoundPlayer(target) != 2 && enemy.GetHP < 3)
             {
                 activationLevel = 0.0f;
+            }
 
+            else if (enemy.FoundPlayer(target) == 1 && enemy.GetHP > 3)
+            {
+                activationLevel = 2.0f;
             }
 
             CheckBounds();
             return base.CalculateActivation();
         }
 
-       
+
     }
 }

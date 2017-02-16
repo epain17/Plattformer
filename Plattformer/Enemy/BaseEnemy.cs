@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Plattformer.Enemy;
+using Microsoft.Xna.Framework.Input;
 
 namespace Plattformer
 {
@@ -20,6 +21,7 @@ namespace Plattformer
         protected int energy;
         protected int playerHP;
         protected float speed;
+        protected int enemyHP;
 
         //Pathifinding realterat
         protected Pathfinder pathfinder;
@@ -59,7 +61,7 @@ namespace Plattformer
             playerHP = 0;
 
         }
-        public virtual void Update(GameTime gameTime, TileGrid grid, Point target, int playerHP)
+        public virtual void Update(GameTime gameTime, TileGrid grid, Point target)
         {
             this.playerHP = playerHP;
             this.target = target;
@@ -99,6 +101,26 @@ namespace Plattformer
         {
             get { return Vector2.Distance(new Vector2(position.X, position.Y), new Vector2(waypoints.Peek().X, waypoints.Peek().Y)); }
 
+        }
+        public int GetHP
+        {
+            get { return enemyHP; }
+        }
+
+        protected int HP()
+        {
+            if (KeyMouseReader.KeyPressed(Keys.O) && KeyMouseReader.oldKeyState.IsKeyUp(Keys.O))
+            {
+                return enemyHP--;
+            }
+
+            else if (KeyMouseReader.KeyPressed(Keys.P) && KeyMouseReader.oldKeyState.IsKeyUp(Keys.P))
+            {
+
+                return enemyHP++;
+            }
+
+            return enemyHP;
         }
 
         //Pathfinding

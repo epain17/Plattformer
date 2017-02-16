@@ -45,7 +45,7 @@ namespace Plattformer.Enemy
             this.patrolPointY = 0;
         }
 
-        public override void Update(GameTime gameTime, TileGrid grid, Point target, int playerHP)
+        public override void Update(GameTime gameTime, TileGrid grid, Point target)
         {
 
             switch (currentState)
@@ -160,7 +160,7 @@ namespace Plattformer.Enemy
 
                     break;
             }
-            base.Update(gameTime, grid, target, playerHP);
+            base.Update(gameTime, grid, target);
         }
 
         public override void Draw(SpriteBatch spriteBatch)
