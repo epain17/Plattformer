@@ -43,11 +43,19 @@ namespace Plattformer
             {
                 activationLevel = 0.0f;
             }
+
             else if(enemy.FoundPlayer(target) == 1 && enemy.PlayerHP <=5)
             {
                 activationLevel = 2.0f;
                 enemy.Speed = 120;
             }
+
+            else if (enemy.FoundPlayer(target) == 1 && enemy.PlayerHP <= 3)
+            {
+                activationLevel = 2.0f;
+                enemy.Speed = 140;
+            }
+
             else if(enemy.FoundPlayer(target) == 1 && enemy.PlayerHP > 5)
             {
                 activationLevel = 0.0f;
@@ -58,10 +66,6 @@ namespace Plattformer
             return base.CalculateActivation();
         }
 
-        public override void Exit()
-        {
-
-            base.Exit();
-        }
+       
     }
 }

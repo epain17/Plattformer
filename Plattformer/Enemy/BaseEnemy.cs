@@ -21,7 +21,6 @@ namespace Plattformer
         protected int playerHP;
         protected float speed;
 
-
         //Pathifinding realterat
         protected Pathfinder pathfinder;
         protected Queue<Vector2> waypoints = new Queue<Vector2>();
@@ -29,6 +28,7 @@ namespace Plattformer
         protected Point pr, p1;
         protected Random random;
 
+        //Timer
         protected double searchTimer, searchTimerReset;
         protected double patrolTimer, patrolTimerReset;
         protected double energyTimer, energyTimerReset;
@@ -59,63 +59,49 @@ namespace Plattformer
             playerHP = 0;
 
         }
-
         public virtual void Update(GameTime gameTime, TileGrid grid, Point target, int playerHP)
         {
             this.playerHP = playerHP;
             this.target = target;
         }
-
         public virtual void Draw(SpriteBatch spriteBatch)
         {
             spriteBatch.Draw(texture, position, Color.White);
         }
 
-        public Rectangle Hitbox
-        {
-            get { return hitbox = new Rectangle((int)position.X, (int)position.Y, 40, 40); }
-        }
-
-        protected Vector2 myPosition
+        //Gets and Set
+        public Vector2 myPosition
         {
             get { return position; }
         }
-
         public Point myGridPoint
         {
             get { return new Point((int)position.X / 40, (int)position.Y / 40); }
         }
-
-        public int wayCount
-        {
-            get { return waypoints.Count(); }
-        }
-
         public Point GetTarget
         {
             get { return target; }
         }
-
-        public Point SetPatroll(Point patrolPoint, TileGrid tileGrid)
+        public Rectangle Hitbox
         {
-            patrolPointX = 0;
-            patrolPointY = 0;
-            while (tileGrid.Check(patrolPointX, patrolPointY) == 1)
-            {
-                patrolPointX = random.Next(1, tileGrid.width);
-                patrolPointY = random.Next(1, tileGrid.height);
-            }
-
-
-            return p1 = new Point(patrolPointX, patrolPointY);
+            get { return hitbox = new Rectangle((int)position.X, (int)position.Y, 40, 40); }
         }
-
+        public float Speed
+        {
+            get { return speed; }
+            set { speed = value; }
+        }
+        public int PlayerHP
+        {
+            get { return playerHP; }
+        }
         protected float DistanceToWayPoint
         {
             get { return Vector2.Distance(new Vector2(position.X, position.Y), new Vector2(waypoints.Peek().X, waypoints.Peek().Y)); }
 
         }
 
+        //Pathfinding
         public void FindPath(Point targetPoint, TileGrid tileGrid)
         {
             if (waypoints != null)
@@ -130,7 +116,6 @@ namespace Plattformer
                 }
             }
         }
-
         public bool UpdatePostion(float elapsed)
         {
             //ändrade här med goal
@@ -158,25 +143,14 @@ namespace Plattformer
             return position == goal;
         }
 
-        public float Range(Point point)
+        //Avstånds mättningar
+        protected float Heuristic(Point point1, Point point2)
         {
-            Vector2 range = new Vector2(point.X * 40, point.Y * 40);
-            return Vector2.Distance(this.position, range);
+            return Math.Abs(point1.X - point2.X) + Math.Abs(point1.Y - point2.Y);
         }
-
-        public int FoundPlayer(Point TP)
+        public float DistanceTo(Point target, Point currentPoint)
         {
-            if (Range(TP) < aggroRange)
-            {
-                return 1;
-            }
-
-            else if (Range(TP) > aggroRange && myGridPoint != pr)
-            {
-                return 2;
-            }
-
-            return 0;
+            return Vector2.Distance(new Vector2(target.X, target.Y), new Vector2(currentPoint.X, currentPoint.Y));
         }
 
         /// <summary>
@@ -232,31 +206,49 @@ namespace Plattformer
             return r;
         }
 
-        protected float Heuristic(Point point1, Point point2)
+        //Sätta patrul punkt
+        public Point SetPatroll(Point patrolPoint, TileGrid tileGrid)
         {
-            return Math.Abs(point1.X - point2.X) + Math.Abs(point1.Y - point2.Y);
+            patrolPointX = 0;
+            patrolPointY = 0;
+            while (tileGrid.Check(patrolPointX, patrolPointY) == 1)
+            {
+                patrolPointX = random.Next(1, tileGrid.width);
+                patrolPointY = random.Next(1, tileGrid.height);
+            }
+
+
+            return p1 = new Point(patrolPointX, patrolPointY);
         }
 
-        public float DistanceTo(Point target, Point currentPoint)
+        //Range metoder
+        public float Range(Point point)
         {
-            return Vector2.Distance(new Vector2(target.X, target.Y), new Vector2(currentPoint.X, currentPoint.Y));
+            Vector2 range = new Vector2(point.X * 40, point.Y * 40);
+            return Vector2.Distance(this.position, range);
+        }
+        public int FoundPlayer(Point TP)
+        {
+            if (Range(TP) < aggroRange)
+            {
+                return 1;
+            }
+
+            else if (Range(TP) > aggroRange && myGridPoint != pr)
+            {
+                return 2;
+            }
+
+            return 0;
         }
 
-        public virtual float Speed
-        {
-            get { return speed; }
-            set { speed = value; }
-        }
 
-        public virtual int Aggro
-        {
-            get { return aggroRange; }
-            set { aggroRange = value; }
-        }
 
-        public int PlayerHP
-        {
-            get { return playerHP; }
-        }
+
+
+
+
+
+
     }
 }

@@ -38,12 +38,13 @@
     <ApplicationIcon>Icon.ico</ApplicationIcon>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="FuSM\AiFuSMControl.cs" />
+    <Compile Include="FuSM\AiControl.cs" />
     <Compile Include="Enemy\BaseEnemy.cs" />
     <Compile Include="Enemy\TileGrid.cs" />
     <Compile Include="FSM\FSMenemy.cs" />
     <Compile Include="FuSM\FStateAttack.cs" />
     <Compile Include="FuSM\FStateAvoid.cs" />
+    <Compile Include="FuSM\FStateHide.cs" />
     <Compile Include="FuSM\FuSM.cs" />
     <Compile Include="FuSM\FuSMenemy.cs" />
     <Compile Include="FuSM\FuSMState.cs" />

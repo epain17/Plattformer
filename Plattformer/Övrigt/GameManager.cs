@@ -28,7 +28,7 @@ namespace Plattformer
         Block block;
 
         FuSMenemy fuSMEnemy;
-        AiFuSMControl controller;
+        AiControl controller;
         
     
         TileGrid tilegrid;
@@ -89,7 +89,7 @@ namespace Plattformer
             LoadLevel();
             tilegrid = new TileGrid(temptex, 0, 0, 40, 20, 13);
             SetGrid(tilegrid);
-            controller = new AiFuSMControl(fuSMEnemy, player.myPoint, tilegrid, player.HP());
+            controller = new AiControl(fuSMEnemy, player.myPoint, tilegrid, player.HP());
 
             pathfinder = new Pathfinder(tilegrid);
             backGround = new BackGround(Content, gameWindow);

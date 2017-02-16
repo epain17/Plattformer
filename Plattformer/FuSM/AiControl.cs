@@ -8,17 +8,18 @@ using System.Threading.Tasks;
 
 namespace Plattformer
 {
-    class AiFuSMControl
+    class AiControl
     {
         FuSMenemy enemy;
         private FuSM fuzzy;
         FStateAttack attack;
         FStateAvoid avoid;
+        FStateHide hide;
         Point target;
         TileGrid grid;
         int playerHP;
 
-        public AiFuSMControl(FuSMenemy enemy, Point target, TileGrid grid, int playerHP)
+        public AiControl(FuSMenemy enemy, Point target, TileGrid grid, int playerHP)
         {
             this.enemy = enemy;     
             this.target = target;
@@ -26,6 +27,8 @@ namespace Plattformer
             this.playerHP = playerHP;
             attack = new FStateAttack(enemy, target, grid);
             avoid = new FStateAvoid(enemy, target, grid);
+            hide = new FStateHide(enemy, target, grid);
+            
             AddStates();
         }
 
@@ -34,6 +37,7 @@ namespace Plattformer
             fuzzy = new FuSM(this);
             fuzzy.AddState(attack);
             fuzzy.AddState(avoid);
+            fuzzy.AddState(hide);
             fuzzy.Reset();
         }
 

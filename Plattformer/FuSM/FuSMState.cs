@@ -20,7 +20,6 @@ namespace Plattformer
 
         protected float activationLevel;
         public virtual void Update(GameTime gameTime) { }
-        public virtual void Enter() { }
         public virtual void Exit() { }
         public virtual void Init() { }
         public virtual float CalculateActivation()

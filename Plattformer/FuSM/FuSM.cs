@@ -13,7 +13,7 @@ namespace Plattformer
         List<FuSMState> states = new List<FuSMState>();
         List<FuSMState> activeStates = new List<FuSMState>();
 
-        public FuSM(AiFuSMControl control)
+        public FuSM(AiControl control)
         {
 
         }
@@ -26,26 +26,26 @@ namespace Plattformer
             }
 
             activeStates.Clear();
-            List<FuSMState> nonActiveStates = new List<FuSMState>();
+            //List<FuSMState> nonActiveStates = new List<FuSMState>();
             for (int i = 0; i < states.Count(); i++)
             {
                 if(states[i].CalculateActivation() > 0)
                 {
                     activeStates.Add(states[i]);
                 }
-                else
-                {
-                    nonActiveStates.Add(states[i]);
-                }
+                //else
+                //{
+                //    nonActiveStates.Add(states[i]);
+                //}
             }
 
-            if(nonActiveStates.Count() != 0)
-            {
-                for (int i = 0; i < nonActiveStates.Count(); i++)
-                {
-                    nonActiveStates[i].Exit();
-                }
-            }
+            //if(nonActiveStates.Count() != 0)
+            //{
+            //    for (int i = 0; i < nonActiveStates.Count(); i++)
+            //    {
+            //        nonActiveStates[i].Exit();
+            //    }
+            //}
 
             if(activeStates.Count() != 0)
             {
@@ -80,7 +80,6 @@ namespace Plattformer
         {
             for (int i = 0; i < states.Count(); i++)
             {
-                states[i].Exit();
                 states[i].Init();
             }
         }
