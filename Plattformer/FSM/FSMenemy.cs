@@ -30,28 +30,33 @@ namespace Plattformer.Enemy
             this.searchTimer = 0;
             this.searchTimerReset = 200;
 
-            this.patrolTimer = 200;
+            this.patrolTimer = 0;
             this.patrolTimerReset = 200;
 
             this.energyTimer = 5000;
             this.energyTimerReset = 5000;
-            this.energy = 30;
+            this.energy = 15;
 
-            this.aggroRange = 300;
+            this.aggroRange = 200;
             this.speed = 0;
             this.random = new Random();
 
             this.patrolPointX = 0;
             this.patrolPointY = 0;
+
+            this.enemyHP = 10;
+            this.energy = 15;
         }
 
         public override void Update(GameTime gameTime, TileGrid grid, Point target)
         {
+            HP();
+            Console.WriteLine(this.energy);
 
             switch (currentState)
             {
                 case State.attack:
-                    if (FoundPlayer(target) == 1 && searchTimer < 0)
+                    if (FoundPlayer(target) == 1 && searchTimer < 0 && GetHP > 5)
                     {
 
                         FindPath(target, grid);
@@ -69,12 +74,11 @@ namespace Plattformer.Enemy
                         FindPath(sleepPoint, grid);
                         currentState = State.sleep;
                     }
-
-                    if(KeyMouseReader.KeyPressed(Microsoft.Xna.Framework.Input.Keys.A))
+                    else if(GetHP < 5)
                     {
-                        waypoints.Clear();
                         currentState = State.flee;
                     }
+
 
                     if (waypoints.Count() != 0 && waypoints != null)
                     {
@@ -88,14 +92,14 @@ namespace Plattformer.Enemy
 
                 case State.patrol:
 
-                    if (FoundPlayer(target) != 1 && energy <= 0)
+                    if (FoundPlayer(target) != 1 && energy <= 0|| GetHP < 2)
                     {
                         waypoints.Clear();
                         FindPath(sleepPoint, grid);
                         currentState = State.sleep;
                     }
 
-                    else if (FoundPlayer(target) == 1)
+                    else if (FoundPlayer(target) == 1 && GetHP > 5)
                     {
                         waypoints.Clear();
                         currentState = State.attack;
@@ -105,6 +109,7 @@ namespace Plattformer.Enemy
                     {
                         SetPatroll(p1, grid);
                         FindPath(p1, grid);
+                        patrolTimer = patrolTimerReset;
                     }
 
                     patrolTimer -= gameTime.ElapsedGameTime.TotalMilliseconds;
@@ -112,16 +117,22 @@ namespace Plattformer.Enemy
                     {
                         UpdatePostion((float)gameTime.ElapsedGameTime.TotalSeconds);
                     }
-                    speed = 60f;
+                    speed = 55f;
                     break;
 
                 case State.sleep:
 
-                    if (FoundPlayer(target) == 1)
+                    if (FoundPlayer(target) == 1 && GetHP >5)
                     {
-                        energy = 30;
+                        energy = 15;
                         energyTimer = energyTimerReset;
                         currentState = State.attack;
+                    }
+                    else if((FoundPlayer(target) == 1 && GetHP < 5))
+                    {
+                        energy = 10;
+                        energyTimer = energyTimerReset;
+                        currentState = State.flee;
                     }
 
                     if (waypoints.Count() == 0)
@@ -129,7 +140,8 @@ namespace Plattformer.Enemy
                         energyTimer -= gameTime.ElapsedGameTime.TotalMilliseconds;
                         if (energyTimer < 0)
                         {
-                            energy = 30;
+                            energy = 15;
+                            this.enemyHP = 10;
                             energyTimer = energyTimerReset;
                             currentState = State.patrol;
                         }
@@ -148,7 +160,7 @@ namespace Plattformer.Enemy
                     Point flee = EscapePoint(myGridPoint, target, grid);
                     FindPath(flee, grid);
                     speed = 110f;
-                    if(FoundPlayer(target) == 2)
+                    if (FoundPlayer(target) == 2 || GetHP > 5)
                     {
                         currentState = State.patrol;
                     }
@@ -161,8 +173,8 @@ namespace Plattformer.Enemy
                     break;
             }
             base.Update(gameTime, grid, target);
-        }
 
+        }
         public override void Draw(SpriteBatch spriteBatch)
         {
        

@@ -63,14 +63,15 @@ namespace Plattformer
                 activationLevel = 0;
             }
 
-            else if (enemy.GetHP < 3 && enemy.DistanceTo(target, enemy.myGridPoint) > 3)
-            {
-                activationLevel = 2f;
-            }
 
             else if(enemy.DistanceTo(target, enemy.myGridPoint) < 3)
             {
                 activationLevel = 0;
+            }
+
+            else if (enemy.GetHP < 3 && enemy.DistanceTo(target, enemy.myGridPoint) > 3)
+            {
+                activationLevel = (enemy.DistanceTo(target, enemy.myGridPoint)/ enemy.GetHP);
             }
 
             CheckBounds();

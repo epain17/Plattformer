@@ -122,6 +122,11 @@ namespace Plattformer
 
             return enemyHP;
         }
+        public int GetRange
+        {
+            get { return aggroRange; }
+        }
+
 
         //Pathfinding
         public void FindPath(Point targetPoint, TileGrid tileGrid)

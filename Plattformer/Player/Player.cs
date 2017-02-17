@@ -56,6 +56,7 @@ namespace Plattformer
 
             Animation(gameTime);
             KeyInput(grid);
+            Speed();
 
             switch (currentDir)
             {
@@ -116,7 +117,7 @@ namespace Plattformer
             return new Rectangle((int)drawPos.X + 10, (int)drawPos.Y, 20, 40);
         }
 
-       
+
 
         public Point myPosition
         {
@@ -131,7 +132,7 @@ namespace Plattformer
 
         private bool UpdatePostion(Vector2 goal, float elapsed)
         {
-        
+
             if (drawPos == goal) return true;
             Vector2 direction = Vector2.Normalize(goal - drawPos);
             drawPos += direction * speed * elapsed;
@@ -220,9 +221,17 @@ namespace Plattformer
                 sourceRect.X = (frame % 9) * 40;
             }
 
-      
+
         }
 
+        public float Speed()
+        {
+            if (KeyMouseReader.KeyPressed(Keys.C))
+            {
+               return speed = 160;
+            }
+            return speed = 100;
 
+        }
     }
 }

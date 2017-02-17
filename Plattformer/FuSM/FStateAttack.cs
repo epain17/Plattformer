@@ -51,7 +51,7 @@ namespace Plattformer
 
             else if (enemy.FoundPlayer(target) == 1 && enemy.GetHP > 3)
             {
-                activationLevel = 2.0f;
+                activationLevel = ((enemy.DistanceTo(target, enemy.myGridPoint) * enemy.GetRange)/enemy.GetRange) / enemy.GetHP;
             }
 
             CheckBounds();
