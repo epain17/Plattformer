@@ -28,15 +28,17 @@ namespace Plattformer
         public override void Update(GameTime gameTime)
         {
             Point temp = new Point(0, 0);
-            SetSpeed(target);
+            enemy.Speed = 100 * activationLevel;
 
             Point flee = enemy.EscapePoint(enemy.myGridPoint, target, grid);
+
+
             if (flee != temp)
             {
+                
                 enemy.FindPath(flee, grid);
                 enemy.UpdatePostion((float)gameTime.ElapsedGameTime.TotalSeconds);
             }
-            Console.WriteLine("avoid");
             base.Update(gameTime);
         }
 
@@ -44,17 +46,16 @@ namespace Plattformer
         {
             target = enemy.GetTarget;
 
-            if (enemy.GetHP > 3 && enemy.DistanceTo(target, enemy.myGridPoint) > 3)
+            if (enemy.DistanceTo(target, enemy.myGridPoint) > SetRangeDist(enemy.GetHP))
             {
                 activationLevel = 0.0f;
             }
-            else if (enemy.DistanceTo(target, enemy.myGridPoint) > 3)
+
+            else
             {
-                activationLevel = 0.0f;
-            }
-            else if (enemy.GetHP < 3 && enemy.DistanceTo(target, enemy.myGridPoint) < 3)
-            {
-                activationLevel = (enemy.DistanceTo(target, enemy.myGridPoint)/enemy.GetHP);
+                activationLevel = 1 - ((float)enemy.GetHP / (float)enemy.GetRange * (enemy.DistanceTo(target, enemy.myGridPoint)));
+                Console.WriteLine("avoid" + activationLevel);
+
             }
 
             CheckBounds();
@@ -76,5 +77,10 @@ namespace Plattformer
 
         }
 
+        private int SetRangeDist(int enemyHp)
+        {
+            int temp;
+            return temp = 10 % enemyHp;
+        }
     }
 }

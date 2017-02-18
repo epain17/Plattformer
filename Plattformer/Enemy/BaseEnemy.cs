@@ -63,7 +63,6 @@ namespace Plattformer
         }
         public virtual void Update(GameTime gameTime, TileGrid grid, Point target)
         {
-            this.playerHP = playerHP;
             this.target = target;
         }
         public virtual void Draw(SpriteBatch spriteBatch)
@@ -229,7 +228,11 @@ namespace Plattformer
 
             }
 
+            if (r != Point.Zero)
+            {
+                waypoints.Clear();
 
+            }
             return r;
         }
 

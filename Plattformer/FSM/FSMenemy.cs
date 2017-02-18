@@ -51,7 +51,7 @@ namespace Plattformer.Enemy
         public override void Update(GameTime gameTime, TileGrid grid, Point target)
         {
             HP();
-            Console.WriteLine(this.energy);
+            //Console.WriteLine(this.energy);
 
             switch (currentState)
             {

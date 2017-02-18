@@ -30,28 +30,28 @@ namespace Plattformer
             {
                 enemy.FindPath(target, grid);
             }
-            enemy.Speed = 140;
+            enemy.Speed = 100 * activationLevel;
+           
             enemy.UpdatePostion((float)gameTime.ElapsedGameTime.TotalSeconds);
-            Console.WriteLine("attack");
+
+            
             base.Update(gameTime);
         }
 
         public override float CalculateActivation()
         {
             target = enemy.GetTarget;
-            if (enemy.FoundPlayer(target) == 2 && enemy.GetHP < 3)
+            if (enemy.FoundPlayer(target) == 2)
             {
                 activationLevel = 0.0f;
             }
 
-            else if(enemy.FoundPlayer(target) != 2 && enemy.GetHP < 3)
-            {
-                activationLevel = 0.0f;
-            }
 
-            else if (enemy.FoundPlayer(target) == 1 && enemy.GetHP > 3)
+            else if (enemy.FoundPlayer(target) == 1)
             {
-                activationLevel = ((enemy.DistanceTo(target, enemy.myGridPoint) * enemy.GetRange)/enemy.GetRange) / enemy.GetHP;
+                activationLevel = ((enemy.DistanceTo(target, enemy.myGridPoint) * enemy.GetHP) / (enemy.GetRange / 2) * 6);
+                Console.WriteLine("attack" + activationLevel);
+
             }
 
             CheckBounds();

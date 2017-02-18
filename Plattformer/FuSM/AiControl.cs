@@ -35,7 +35,7 @@ namespace Plattformer
             fuzzy = new FuSM(this);
             fuzzy.AddState(attack);
             fuzzy.AddState(avoid);
-            fuzzy.AddState(hide);
+            //fuzzy.AddState(hide);
             fuzzy.Reset();
         }
 
