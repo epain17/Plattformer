@@ -42,7 +42,7 @@ namespace Plattformer
         
         public override void Update(GameTime gameTime, TileGrid grid, Point target)
         {
-            Console.WriteLine("Hp" + enemyHP);
+           //Console.WriteLine("Hp" + enemyHP);
             HP();
             base.Update(gameTime, grid, target);
         }

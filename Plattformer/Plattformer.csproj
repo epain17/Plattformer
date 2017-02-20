@@ -38,8 +38,11 @@
     <ApplicationIcon>Icon.ico</ApplicationIcon>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="DTree\ApproatchState.cs" />
+    <Compile Include="DTree\PatrolState.cs" />
     <Compile Include="DTree\DTenemy.cs" />
     <Compile Include="DTree\Node.cs" />
+    <Compile Include="DTree\SleepState.cs" />
     <Compile Include="DTree\State.cs" />
     <Compile Include="DTree\Tree.cs" />
     <Compile Include="FuSM\AiControl.cs" />

@@ -11,15 +11,20 @@ namespace Plattformer.DTree
         public int value;
         public bool question;
         public Node left, right;
-        public BaseEnemy enemy;
+        public DTenemy enemy;
         public State behaviour;
-        public Node(int value, bool question, BaseEnemy enemy, State behaviour)
+        public Node(int value, bool question, DTenemy enemy, State behaviour)
         {
+            this.enemy = enemy;
             this.value = value;
             this.question = question;
-            this.enemy = enemy;
             this.behaviour = behaviour;
         }
+
+        //public bool FindEnemy()
+        //{
+        //    return enemy.FoundPlayer(enemy.)
+        //}
 
 
 

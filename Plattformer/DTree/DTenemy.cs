@@ -13,7 +13,7 @@ namespace Plattformer.DTree
     {
         Tree tree;
         State currentState;
-        public DTenemy(Texture2D texture, int startX, int startY, Point sleep, Tree tree)
+        public DTenemy(Texture2D texture, int startX, int startY, Point sleep)
             : base(texture, startX, startY, sleep)
         {
             this.texture = texture;
@@ -40,18 +40,37 @@ namespace Plattformer.DTree
             this.enemyHP = 10;
             this.energy = 15;
 
-            this.tree = tree;
-            //currentState = new State();
+            currentState = new State(this);
+            MakeDTree();
+        }
+
+        public void MakeDTree()
+        {
+            PatrolState pState = new PatrolState(this);
+            SleepState sState = new SleepState(this);
+            ApproatchState aState = new ApproatchState(this);
+            tree = new Tree(this);
+            tree.Insert(8, this.FoundPlayer(this.target) == 1, this, null);
+            tree.Insert(3, this.energy != 0, this, null);
+            tree.Insert(10, this.GetHP > 5, this, null);
+            tree.Insert(1, true, this, pState);
+            tree.Insert(6, true, this, sState);
+            tree.Insert(9, true, this, sState);
+            tree.Insert(14, true, this, aState);
+            Console.WriteLine(tree.DrawTree());
+
         }
 
         public State Behaviour(State state, Tree tree)
         {
-            state = tree.Traverse();
+            state = tree.Traverse(this.target);
             return state;
         }
 
         public override void Update(GameTime gameTime, TileGrid grid, Point target)
         {
+            currentState = Behaviour(currentState, tree);
+            currentState.RunBehaviour(gameTime, grid, target);
             base.Update(gameTime, grid, target);
         }
 

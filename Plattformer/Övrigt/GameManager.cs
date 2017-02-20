@@ -3,6 +3,7 @@ using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework.Media;
+using Plattformer.DTree;
 using Plattformer.Enemy;
 using System;
 using System.Collections.Generic;
@@ -24,6 +25,8 @@ namespace Plattformer
         Player player;
         Wolf wolf;
         FSMenemy FsmEnemy;
+
+        DTenemy dtEnemy;
         BackGround backGround;
         Block block;
 
@@ -135,7 +138,8 @@ namespace Plattformer
                     //Wolf
                     if (strings[i][j] == 'e')
                     {
-                        FsmEnemy = new FSMenemy(blockTex, j * 40, i * 40, new Point(j, i));
+                        //FsmEnemy = new FSMenemy(blockTex, j * 40, i * 40, new Point(j, i));
+                        dtEnemy = new DTenemy(blockTex2, j * 40, i * 40, new Point(j, i));
                     }
                     //Wolf
                     if (strings[i][j] == 'f')
@@ -167,8 +171,8 @@ namespace Plattformer
             player.Update(gameTime, tilegrid);
             controller.Update(gameTime, player.myPoint, tilegrid);
             //wolf.Update(gameTime, player.myPosition, new Point(3, 10), tilegrid);
-            FsmEnemy.Update(gameTime, tilegrid, player.myPosition);
-
+            //FsmEnemy.Update(gameTime, tilegrid, player.myPosition);
+            dtEnemy.Update(gameTime, tilegrid, player.myPosition);
             // Camera Update
             if (player.Pos.X > 0 + gameWindow.ClientBounds.Width / 2 && player.Pos.X < blockCounter * 40)
                 camPos.X = player.Pos.X;
@@ -207,7 +211,8 @@ namespace Plattformer
             spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, null, null, null, null, camera.Transform);
             tilegrid.Draw(spriteBatch);
             //wolf.Draw(spriteBatch);
-            FsmEnemy.Draw(spriteBatch);
+            //FsmEnemy.Draw(spriteBatch);
+            dtEnemy.Draw(spriteBatch);
             fuSMEnemy.Draw(spriteBatch);
             foreach (GameObject g in gameObjects)
             {

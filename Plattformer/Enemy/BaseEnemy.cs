@@ -13,27 +13,27 @@ namespace Plattformer
     class BaseEnemy
     {
         protected Vector2 position;
-        protected Point sleepPoint;
+        public Point sleepPoint;
 
         protected Rectangle hitbox;
         protected Texture2D texture;
         protected int aggroRange;
-        protected int energy;
+        public int energy;
         protected int playerHP;
         protected float speed;
-        protected int enemyHP;
+        public int enemyHP;
 
         //Pathifinding realterat
         protected Pathfinder pathfinder;
-        protected Queue<Vector2> waypoints = new Queue<Vector2>();
+        public Queue<Vector2> waypoints = new Queue<Vector2>();
         protected Point startPoint, endPoint, previous, target;
-        protected Point pr, p1;
+        public Point pr, p1;
         protected Random random;
 
         //Timer
         protected double searchTimer, searchTimerReset;
-        protected double patrolTimer, patrolTimerReset;
-        protected double energyTimer, energyTimerReset;
+        public double patrolTimer, patrolTimerReset;
+        public double energyTimer, energyTimerReset;
 
         protected int patrolPointX, patrolPointY;
 
@@ -92,6 +92,7 @@ namespace Plattformer
             get { return speed; }
             set { speed = value; }
         }
+        
         public int PlayerHP
         {
             get { return playerHP; }

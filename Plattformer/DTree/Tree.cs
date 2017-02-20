@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.Xna.Framework;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -38,7 +39,7 @@ namespace Plattformer.DTree
         {
             if (node.value > tempNode.value)
             {
-                if (node.right == null)
+                if (tempNode.right == null)
                 {
                     tempNode.right = node;
                 }
@@ -49,7 +50,7 @@ namespace Plattformer.DTree
             }
             else if (node.value < tempNode.value)
             {
-                if (node.left == null)
+                if (tempNode.left == null)
                 {
                     tempNode.left = node;
                 }
@@ -60,7 +61,7 @@ namespace Plattformer.DTree
             }
         }
 
-        public State Traverse()
+        public State Traverse(Point target/*, DTenemy enemy*/)
         {
             Node currentNode = root;
 

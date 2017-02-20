@@ -10,11 +10,10 @@ namespace Plattformer.DTree
 {
     class State
     {
-        string name;
-
-        public State(string name)
+        DTenemy enemy;
+        public State(DTenemy enemy)
         {
-            this.name = name;
+            this.enemy = enemy;
         }
 
         public virtual void RunBehaviour(GameTime gameTime, TileGrid grid, Point target)
