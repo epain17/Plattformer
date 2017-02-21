@@ -54,7 +54,7 @@ namespace Plattformer
             else
             {
                 activationLevel = 1 - ((float)enemy.GetHP / (float)enemy.GetRange * (enemy.DistanceTo(target, enemy.myGridPoint)));
-                Console.WriteLine("avoid" + activationLevel);
+                //Console.WriteLine("avoid" + activationLevel);
 
             }
 

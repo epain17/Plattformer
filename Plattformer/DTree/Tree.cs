@@ -61,7 +61,7 @@ namespace Plattformer.DTree
             }
         }
 
-        public State Traverse(Point target/*, DTenemy enemy*/)
+        public State Traverse(Point target)
         {
             Node currentNode = root;
 
@@ -87,6 +87,32 @@ namespace Plattformer.DTree
             }
             return null;
         }
+
+        public void TreeUpdate(DTenemy enemy)
+        {
+            Node currentNode = root;
+
+            while (currentNode != null)
+            {
+                if (currentNode.question == false && currentNode.left != null)
+                {
+                    currentNode = currentNode.left;
+                    if (currentNode.behaviour != null)
+                    {
+                         
+                    }
+                }
+                else if (currentNode.question == true && currentNode.right != null)
+                {
+                    currentNode = currentNode.right;
+                    if (currentNode.behaviour != null)
+                    {
+                         
+                    }
+                }
+
+            }
+        } 
 
         public string DrawTree()
         {

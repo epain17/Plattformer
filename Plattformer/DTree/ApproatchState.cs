@@ -21,6 +21,7 @@ namespace Plattformer.DTree
         {
 
             enemy.FindPath(target, grid);
+            enemy.Speed = 100;
 
             if (enemy.waypoints.Count() != 0 && enemy.waypoints != null)
             {

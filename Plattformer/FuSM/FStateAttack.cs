@@ -50,7 +50,7 @@ namespace Plattformer
             else if (enemy.FoundPlayer(target) == 1)
             {
                 activationLevel = ((enemy.DistanceTo(target, enemy.myGridPoint) * enemy.GetHP) / (enemy.GetRange / 2) * 6);
-                Console.WriteLine("attack" + activationLevel);
+                //Console.WriteLine("attack" + activationLevel);
 
             }
 

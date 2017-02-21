@@ -13,6 +13,10 @@ namespace Plattformer.DTree
     {
         Tree tree;
         State currentState;
+        PatrolState pState;
+        SleepState sState;
+        ApproatchState aState;
+
         public DTenemy(Texture2D texture, int startX, int startY, Point sleep)
             : base(texture, startX, startY, sleep)
         {
@@ -31,7 +35,7 @@ namespace Plattformer.DTree
             this.energy = 15;
 
             this.aggroRange = 200;
-            this.speed = 0;
+            this.speed = 50;
             this.random = new Random();
 
             this.patrolPointX = 0;
@@ -40,24 +44,27 @@ namespace Plattformer.DTree
             this.enemyHP = 10;
             this.energy = 15;
 
+            pState = new PatrolState(this);
+            sState = new SleepState(this);
+            aState = new ApproatchState(this);
+
             currentState = new State(this);
             MakeDTree();
         }
 
-        public void MakeDTree()
+        public Tree MakeDTree()
         {
-            PatrolState pState = new PatrolState(this);
-            SleepState sState = new SleepState(this);
-            ApproatchState aState = new ApproatchState(this);
             tree = new Tree(this);
             tree.Insert(8, this.FoundPlayer(this.target) == 1, this, null);
-            tree.Insert(3, this.energy != 0, this, null);
-            tree.Insert(10, this.GetHP > 5, this, null);
+            tree.Insert(3, this.energy <= 0, this, null);
+            tree.Insert(10, this.GetHP >= 5, this, null);
             tree.Insert(1, true, this, pState);
             tree.Insert(6, true, this, sState);
             tree.Insert(9, true, this, sState);
             tree.Insert(14, true, this, aState);
-            Console.WriteLine(tree.DrawTree());
+           // Console.WriteLine(tree.DrawTree());
+
+            return tree;
 
         }
 
@@ -67,10 +74,27 @@ namespace Plattformer.DTree
             return state;
         }
 
+        public bool TargetUpdate(Point target)
+        {
+            if(this.FoundPlayer(target) == 1)
+            {
+                return true;
+            }
+            return false;
+        }
+         
+
         public override void Update(GameTime gameTime, TileGrid grid, Point target)
         {
+            HP();
             currentState = Behaviour(currentState, tree);
             currentState.RunBehaviour(gameTime, grid, target);
+            //Console.WriteLine(currentState);
+            Console.WriteLine(this.enemyHP + "DTEnemy");
+
+
+            tree = MakeDTree();
+
             base.Update(gameTime, grid, target);
         }
 

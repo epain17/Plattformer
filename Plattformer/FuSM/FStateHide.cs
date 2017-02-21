@@ -50,7 +50,7 @@ namespace Plattformer
             {
                 enemy.Speed = 0;
             }
-            Console.WriteLine("hide" + hide);
+            //Console.WriteLine("hide" + hide);
             base.Update(gameTime);
         }
 

@@ -23,14 +23,19 @@ namespace Plattformer.DTree
 
             if (enemy.waypoints.Count() != 0 && enemy.sleepPoint != enemy.myGridPoint)
             {
+                enemy.waypoints.Clear();
                 enemy.FindPath(enemy.sleepPoint, grid);
             }
-            enemy.energyTimer -= gameTime.ElapsedGameTime.TotalMilliseconds;
-            if (enemy.energyTimer < 0)
+            if (enemy.waypoints.Count() == 0)
             {
-                enemy.energy = 15;
-                enemy.enemyHP = 10;
-                enemy.energyTimer = enemy.energyTimerReset;
+
+                enemy.energyTimer -= gameTime.ElapsedGameTime.TotalMilliseconds;
+                if (enemy.energyTimer < 0)
+                {
+                    enemy.energy = 15;
+                    enemy.enemyHP = 10;
+                    enemy.energyTimer = enemy.energyTimerReset;
+                }
             }
             if (enemy.waypoints.Count() != 0 && enemy.waypoints != null)
             {

@@ -38,7 +38,7 @@ namespace Plattformer
         Tile blockTile;
        
         //Textures 
-        Texture2D playerTex, spikeTex, wolfTex, bonTex;
+        Texture2D playerTex, spikeTex, bonTex;
         Texture2D blockTex, blockTex2, blockTex3;
         Texture2D backDrop, vic;
         public static Texture2D temptex;
@@ -125,7 +125,7 @@ namespace Plattformer
                         gameObjects.Add(player);
                     }
                     //Block
-                    if (strings[i][j] == 'b')
+                    else if (strings[i][j] == 'b')
                     {
                         block = new Block(blockTex, j * 40, i * 40);
                         blockTile = new Plattformer.Tile(blockTex, new Vector2(j * 40, i * 40), 40);
@@ -134,15 +134,20 @@ namespace Plattformer
                         tiles.Add(blockTile);
                         counter++;
                     }
-            
-                    //Wolf
-                    if (strings[i][j] == 'e')
+
+                    else if (strings[i][j] == 's')
+                    {
+                        FsmEnemy = new FSMenemy(blockTex, j * 40, i * 40, new Point(j, i));
+
+                    }
+
+                    else if (strings[i][j] == 'd')
                     {
                         //FsmEnemy = new FSMenemy(blockTex, j * 40, i * 40, new Point(j, i));
                         dtEnemy = new DTenemy(blockTex2, j * 40, i * 40, new Point(j, i));
                     }
                     //Wolf
-                    if (strings[i][j] == 'f')
+                    else if (strings[i][j] == 'z')
                     {
                         fuSMEnemy = new FuSMenemy(blockTex, j * 40, i * 40, new Point(j, i));
                     }
@@ -170,8 +175,7 @@ namespace Plattformer
             backGround.Update();
             player.Update(gameTime, tilegrid);
             controller.Update(gameTime, player.myPoint, tilegrid);
-            //wolf.Update(gameTime, player.myPosition, new Point(3, 10), tilegrid);
-            //FsmEnemy.Update(gameTime, tilegrid, player.myPosition);
+            FsmEnemy.Update(gameTime, tilegrid, player.myPosition);
             dtEnemy.Update(gameTime, tilegrid, player.myPosition);
             // Camera Update
             if (player.Pos.X > 0 + gameWindow.ClientBounds.Width / 2 && player.Pos.X < blockCounter * 40)
@@ -211,7 +215,7 @@ namespace Plattformer
             spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, null, null, null, null, camera.Transform);
             tilegrid.Draw(spriteBatch);
             //wolf.Draw(spriteBatch);
-            //FsmEnemy.Draw(spriteBatch);
+            FsmEnemy.Draw(spriteBatch);
             dtEnemy.Draw(spriteBatch);
             fuSMEnemy.Draw(spriteBatch);
             foreach (GameObject g in gameObjects)

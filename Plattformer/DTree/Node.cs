@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.Xna.Framework;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -21,10 +22,18 @@ namespace Plattformer.DTree
             this.behaviour = behaviour;
         }
 
-        //public bool FindEnemy()
-        //{
-        //    return enemy.FoundPlayer(enemy.)
-        //}
+        public bool updatebool(Point target, DTenemy enemy)
+        {
+            if (enemy.FoundPlayer(target) == 1)
+            {
+                return true;
+            }
+            return false;
+        }
+
+
+
+
 
 
 
