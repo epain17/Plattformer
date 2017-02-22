@@ -51,7 +51,7 @@ namespace Plattformer.Enemy
         public override void Update(GameTime gameTime, TileGrid grid, Point target)
         {
             HP();
-            Console.WriteLine(this.enemyHP + "fsmEnemy");
+            Console.WriteLine("FSMEnemy" + GetHP);
             switch (currentState)
             {
                 case State.attack:
@@ -100,18 +100,25 @@ namespace Plattformer.Enemy
                         currentState = State.sleep;
                     }
 
-                    else if (FoundPlayer(target) == 1 && GetHP > 5)
-                    {
-                        waypoints.Clear();
-                        currentState = State.attack;
-                    }
-
-                    if (FoundPlayer(target) != 1 && patrolTimer <= 0)
+                    else if (FoundPlayer(target) != 1 && patrolTimer <= 0)
                     {
                         SetPatroll(p1, grid);
                         FindPath(p1, grid);
                         patrolTimer = patrolTimerReset;
                     }
+
+                    if (FoundPlayer(target) == 1 && GetHP > 5)
+                    {
+                        waypoints.Clear();
+                        currentState = State.attack;
+                    }
+
+                    else if(FoundPlayer(target) == 1 && GetHP < 5)
+                    {
+                        waypoints.Clear();
+                        currentState = State.flee;
+                    }
+
 
                     patrolTimer -= gameTime.ElapsedGameTime.TotalMilliseconds;
                     if (waypoints.Count() != 0 && waypoints != null)
